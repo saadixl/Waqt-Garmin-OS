@@ -2,6 +2,9 @@
 
 A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 
+![1](https://github.com/user-attachments/assets/f9bfbbb4-7cee-4332-aa63-32fe26d090bc)
+
+
 ## Features
 
 ### Prayer times view
@@ -10,12 +13,26 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 - Pressing Up / Down button navigates between prayer times
 - Live countdown timer to the next prayer, updating every second
 
+<table>
+  <tr>
+    <td>
+      <img width="320" alt="IMG_1737" src="https://github.com/user-attachments/assets/43001a4e-1326-41d0-86d9-48218cb47970" />
+    </td>
+    <td>
+      <img width="320" alt="IMG_1739" src="https://github.com/user-attachments/assets/4df7986f-1a15-462f-98f3-97d85b1125d6" />
+    </td>
+  </tr>
+</table>
+
 ### City selection view
 - Pressing the Select button opens the city selection view
 - Currently 20 cities are supported and their qibla direction is also shown
 - Pressing Up / Down button navigates between cities
 - Pressing the Select button selects the city and fetches corresponding prayer times
 - Selected city is persisted across app launches
+
+![4](https://github.com/user-attachments/assets/ce733c71-f57e-4e46-a80e-5f0f306235fc)
+
 
 ## Supported Cities
 Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Dubai, Tehran, Doha, Moscow, Makkah, Istanbul, Paris, London, Toronto, New York, Austin, San Francisco
