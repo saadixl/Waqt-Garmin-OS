@@ -1,0 +1,9 @@
+bin/
+build/
+*.prg
+*.iq
+.settings/
+.project
+.jungle.local
+*.pem
+*.der
