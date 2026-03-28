@@ -7,3 +7,5 @@ build/
 .jungle.local
 *.pem
 *.der
+.vscode/
+.DS_Store
