@@ -228,5 +228,9 @@ class WaqtPrayerView extends WatchUi.View {
             dc.setColor(remainColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textLeft, itemY + contentOffset + 50, Graphics.FONT_XTINY, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
+
+        // Single cue dot aligned with physical START button on FR970.
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(width - 35, cy - 90, 7);
     }
 }
