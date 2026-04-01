@@ -13,16 +13,8 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 - Pressing Up / Down button navigates between prayer times
 - Live countdown timer to the next prayer, updating every second
 
-<table>
-  <tr>
-    <td>
-      <img width="320" alt="IMG_1737" src="https://github.com/user-attachments/assets/43001a4e-1326-41d0-86d9-48218cb47970" />
-    </td>
-    <td>
-      <img width="320" alt="IMG_1739" src="https://github.com/user-attachments/assets/4df7986f-1a15-462f-98f3-97d85b1125d6" />
-    </td>
-  </tr>
-</table>
+<img width="744" height="831" alt="Screenshot 2026-04-01 at 7 03 53 PM" src="https://github.com/user-attachments/assets/a6c0f38d-8328-4228-9e58-c6cc8701c0ff" />
+
 
 ### City selection view
 - Pressing the Select button opens the city selection view
@@ -31,7 +23,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 - Pressing the Select button selects the city and fetches corresponding prayer times
 - Selected city is persisted across app launches
 
-![4](https://github.com/user-attachments/assets/ce733c71-f57e-4e46-a80e-5f0f306235fc)
+<img width="743" height="828" alt="Screenshot 2026-04-01 at 7 03 41 PM" src="https://github.com/user-attachments/assets/6db57825-f7fb-4fef-8d4c-9e8307c832da" />
 
 
 ## Supported Cities
