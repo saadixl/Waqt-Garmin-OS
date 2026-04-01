@@ -111,6 +111,10 @@ class WaqtSettingsView extends WatchUi.View {
                 textY = textY - 7;
             }
             dc.drawText(cx, textY, Graphics.FONT_TINY, _items[itemIdx], Graphics.TEXT_JUSTIFY_CENTER);
+            if (isCentered) {
+                // Overdraw selected settings text for stronger boldness.
+                dc.drawText(cx + 1, textY, Graphics.FONT_TINY, _items[itemIdx], Graphics.TEXT_JUSTIFY_CENTER);
+            }
         }
 
         // Tick cue (settings): same as city list page.

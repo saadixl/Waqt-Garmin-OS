@@ -202,12 +202,27 @@ class WaqtPrayerView extends WatchUi.View {
             }
 
             // Row 1: Prayer name (left) + Time (right)
+            var rowFont = Graphics.FONT_TINY;
+            var subFont = Graphics.FONT_XTINY;
+            if (isCentered) {
+                // Use heavier system fonts for the selected prayer row.
+                rowFont = Graphics.FONT_SYSTEM_TINY;
+                subFont = Graphics.FONT_SYSTEM_XTINY;
+            }
+
             dc.setColor(nameColor, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(textLeft, itemY + contentOffset, Graphics.FONT_TINY, Constants.PRAYER_NAMES[prayerIdx], Graphics.TEXT_JUSTIFY_LEFT);
+            dc.drawText(textLeft, itemY + contentOffset, rowFont, Constants.PRAYER_NAMES[prayerIdx], Graphics.TEXT_JUSTIFY_LEFT);
+            if (isCentered) {
+                // Overdraw selected row text for a stronger bold look.
+                dc.drawText(textLeft + 1, itemY + contentOffset, rowFont, Constants.PRAYER_NAMES[prayerIdx], Graphics.TEXT_JUSTIFY_LEFT);
+            }
 
             var timeStr = _service.getFormattedTime(prayerIdx);
             dc.setColor(nameColor, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(textRight, itemY + contentOffset, Graphics.FONT_TINY, timeStr, Graphics.TEXT_JUSTIFY_RIGHT);
+            dc.drawText(textRight, itemY + contentOffset, rowFont, timeStr, Graphics.TEXT_JUSTIFY_RIGHT);
+            if (isCentered) {
+                dc.drawText(textRight + 1, itemY + contentOffset, rowFont, timeStr, Graphics.TEXT_JUSTIFY_RIGHT);
+            }
 
             // Row 2: Countdown below prayer name
             var seconds = _service.getSecondsUntilPrayer(prayerIdx);
@@ -226,7 +241,7 @@ class WaqtPrayerView extends WatchUi.View {
             }
 
             dc.setColor(remainColor, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
+            dc.drawText(textLeft, itemY + contentOffset + 48, subFont, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
 
         // Settings cue aligned with physical START button on FR970.

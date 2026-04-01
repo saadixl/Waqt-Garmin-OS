@@ -121,6 +121,10 @@ class WaqtCityView extends WatchUi.View {
 
             dc.setColor(nameColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textLeft, itemY + contentOffset, Graphics.FONT_TINY, CityData.getCityName(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
+            if (isCentered) {
+                // Overdraw selected row text for stronger boldness.
+                dc.drawText(textLeft + 1, itemY + contentOffset, Graphics.FONT_TINY, CityData.getCityName(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
+            }
 
             // Qibla degree (right)
             var qibla = CityData.calculateQibla(cityIdx);
@@ -130,6 +134,9 @@ class WaqtCityView extends WatchUi.View {
             }
             dc.setColor(qiblaColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textRight, itemY + contentOffset + 4, Graphics.FONT_XTINY, qibla + "\u00B0", Graphics.TEXT_JUSTIFY_RIGHT);
+            if (isCentered) {
+                dc.drawText(textRight + 1, itemY + contentOffset + 4, Graphics.FONT_XTINY, qibla + "\u00B0", Graphics.TEXT_JUSTIFY_RIGHT);
+            }
 
             // Country name below city - with clear gap
             var countryColor = Constants.COLOR_GRAY;
