@@ -12,12 +12,27 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 - See the selected city and qibla direction from the selected city on the header
 - Pressing Up / Down button navigates between prayer times
 - Live countdown timer to the next prayer, updating every second
+- Settings icon cue on the right side to open Settings
 
 <img width="744" height="831" alt="Screenshot 2026-04-01 at 7 03 53 PM" src="https://github.com/user-attachments/assets/a6c0f38d-8328-4228-9e58-c6cc8701c0ff" />
 
 
+### Settings view
+- Press Select/Start on prayer view to open Settings
+- Rotating center-selected menu (same interaction style as other lists)
+- Menu items:
+  - Select location
+  - Find Qibla
+  - About
+
+### Find Qibla view
+- Live compass page that points toward Qibla for the currently selected city
+- Uses device heading sensor when available
+- Kaaba marker shown on the compass ring at Qibla bearing
+- City name and Qibla degree are shown inside the compass
+
 ### City selection view
-- Pressing the Select button opens the city selection view
+- Accessible from Settings -> Select location
 - Currently 20 cities are supported and their qibla direction is also shown
 - Pressing Up / Down button navigates between cities
 - Pressing the Select button selects the city and fetches corresponding prayer times
@@ -29,19 +44,30 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 ## Supported Cities
 Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Dubai, Tehran, Doha, Moscow, Makkah, Istanbul, Paris, London, Toronto, New York, Austin, San Francisco
 
-## Target Device
+## Supported Devices
+- Garmin Forerunner 165
+- Garmin Forerunner 165 Music
+- Garmin Forerunner 255S Music
+- Garmin Forerunner 265
+- Garmin Forerunner 265S
+- Garmin Forerunner 570 (42mm)
+- Garmin Forerunner 570 (47mm)
+- Garmin Forerunner 965
 - Garmin Forerunner 970
 
 ## Building
 1. Install the [Connect IQ SDK](https://developer.garmin.com/connect-iq/sdk/) (4.0.6+) and Java 8+
 2. Install the [Monkey C VS Code Extension](https://marketplace.visualstudio.com/items?itemName=garmin.monkey-c)
 3. Generate a developer key: `openssl genrsa 4096 | openssl pkcs8 -topk8 -nocrypt -outform DER -out developer_key.der`
-4. Set the key in VS Code: `Cmd+Shift+P` > "Monkey C: Set Developer Key"
-5. Build: `Cmd+Shift+P` > "Monkey C: Build Current Project"
+4. Build from terminal:
+   - `monkeyc -f monkey.jungle -o bin/app.prg -y developer_key.der`
+5. Run in simulator:
+   - `"/Users/saadixl/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-9.1.0-2026-03-09-6a872a80b/bin/monkeydo" bin/app.prg fr970`
 
 ## Installing on Watch
-Copy `bin/WaqtGarminOS.prg` to the `GARMIN/APPS/` folder on your watch via USB, or side-load through the Connect IQ mobile app.
+Copy your generated `.prg` (for example `bin/app.prg`) to the `GARMIN/APPS/` folder on your watch via USB, or side-load through the Connect IQ mobile app.
 
 ## Note
 - https://api.aladhan.com/v1 API is used to fetch prayer times.
 - The app requires a phone with the Garmin Connect Mobile app for API requests (Garmin watches route HTTP requests through the phone via Bluetooth).
+- The app uses the Sensor permission for live heading on the Find Qibla compass page.
