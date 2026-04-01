@@ -30,8 +30,7 @@ class WaqtSettingsDelegate extends WatchUi.BehaviorDelegate {
             var cityDelegate = new WaqtCityDelegate(cityView, _prayerView);
             WatchUi.pushView(cityView, cityDelegate, WatchUi.SLIDE_LEFT);
         } else if (idx == 1) {
-            // Placeholder page for future Qibla compass workflow.
-            var qiblaView = new WaqtQiblaPlaceholderView();
+            var qiblaView = new WaqtQiblaPlaceholderView(_prayerView._service);
             var qiblaDelegate = new WaqtQiblaPlaceholderDelegate();
             WatchUi.pushView(qiblaView, qiblaDelegate, WatchUi.SLIDE_LEFT);
         } else {

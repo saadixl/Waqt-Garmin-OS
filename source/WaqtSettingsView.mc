@@ -3,7 +3,7 @@ using Toybox.WatchUi;
 
 class WaqtSettingsView extends WatchUi.View {
 
-    var _selected = 0;
+    var _selected = 1;
     const _items = ["Select location", "Find Qibla", "About"];
 
     function initialize() {
