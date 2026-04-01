@@ -229,8 +229,34 @@ class WaqtPrayerView extends WatchUi.View {
             dc.drawText(textLeft, itemY + contentOffset + 50, Graphics.FONT_XTINY, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
 
-        // Single cue dot aligned with physical START button on FR970.
+        // Location-pin cue aligned with physical START button on FR970.
+        var pinX = width - 35;
+        var pinY = cy - 90;
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(width - 35, cy - 90, 7);
+        dc.fillCircle(pinX, pinY, 6);
+        dc.fillPolygon([
+            [pinX - 4, pinY + 3],
+            [pinX + 4, pinY + 3],
+            [pinX, pinY + 11]
+        ]);
+        // Inner cutout so it reads like a map/location pin.
+        dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(pinX, pinY, 2);
+
+        // Up/Down cues at bottom-center, close together, in orange.
+        var arrowX = cx;
+        var upY = height - 34;
+        var downY = height - 20;
+        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
+        dc.fillPolygon([
+            [arrowX, upY - 6],
+            [arrowX - 6, upY + 4],
+            [arrowX + 6, upY + 4]
+        ]);
+        dc.fillPolygon([
+            [arrowX, downY + 6],
+            [arrowX - 6, downY - 4],
+            [arrowX + 6, downY - 4]
+        ]);
     }
 }
