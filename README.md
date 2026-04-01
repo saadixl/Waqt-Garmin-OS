@@ -14,7 +14,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 - Live countdown timer to the next prayer, updating every second
 - Settings icon cue on the right side to open Settings
 
-<img width="744" height="831" alt="Screenshot 2026-04-01 at 7 03 53 PM" src="https://github.com/user-attachments/assets/a6c0f38d-8328-4228-9e58-c6cc8701c0ff" />
+<img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/b6880fd1-ac5c-48f5-ac3d-76afc71e3ba2" />
 
 
 ### Settings view
@@ -24,12 +24,18 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
   - Select location
   - Find Qibla
   - About
+ 
+<img width="480" height="auto" alt="2" src="https://github.com/user-attachments/assets/32aa0cfe-5dab-43ad-9adb-d8bbccc6ec10" />
+
 
 ### Find Qibla view
 - Live compass page that points toward Qibla for the currently selected city
 - Uses device heading sensor when available
 - Kaaba marker shown on the compass ring at Qibla bearing
 - City name and Qibla degree are shown inside the compass
+
+<img width="480" height="auto" alt="4" src="https://github.com/user-attachments/assets/b04900e5-c06f-4d07-9732-bc818b15a3bf" />
+
 
 ### City selection view
 - Accessible from Settings -> Select location
@@ -38,8 +44,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 - Pressing the Select button selects the city and fetches corresponding prayer times
 - Selected city is persisted across app launches
 
-<img width="743" height="828" alt="Screenshot 2026-04-01 at 7 03 41 PM" src="https://github.com/user-attachments/assets/6db57825-f7fb-4fef-8d4c-9e8307c832da" />
-
+<img width="480" height="auto" alt="3" src="https://github.com/user-attachments/assets/62228785-0153-4338-9f99-3ddeddf64164" />
 
 ## Supported Cities
 Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Dubai, Tehran, Doha, Moscow, Makkah, Istanbul, Paris, London, Toronto, New York, Austin, San Francisco
