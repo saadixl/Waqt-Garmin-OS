@@ -112,21 +112,21 @@ class WaqtPrayerView extends WatchUi.View {
         dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 20, Graphics.FONT_XTINY, cityName, Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Qibla (white) centered below city - more space
-        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+        // Qibla in secondary color for clearer visual hierarchy.
+        dc.setColor(Constants.COLOR_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 50, Graphics.FONT_XTINY, "Qibla " + qibla + "\u00B0", Graphics.TEXT_JUSTIFY_CENTER);
 
         // 3 prayer items
         var nextPrayerIdx = _service.getNextPrayerIndex();
-        var itemHeight = 90;
-        var gap = 5;
-        var startY = 90;
+        var itemHeight = 92;
+        var gap = 8;
+        var startY = 94;
 
         // Text margins - inset from circle edge
-        var textLeft = 60;
-        var textRight = width - 60;
+        var textLeft = 64;
+        var textRight = width - 64;
 
-        var highlightedHeight = 110;
+        var highlightedHeight = 104;
 
         for (var i = 0; i < 3; i++) {
             var prayerIdx = (_rotationOffset + i) % Constants.PRAYER_COUNT;
@@ -226,18 +226,18 @@ class WaqtPrayerView extends WatchUi.View {
             }
 
             dc.setColor(remainColor, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(textLeft, itemY + contentOffset + 50, Graphics.FONT_XTINY, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
+            dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
 
         // Location-pin cue aligned with physical START button on FR970.
-        var pinX = width - 35;
-        var pinY = cy - 90;
+        var pinX = width - 33;
+        var pinY = cy - 86;
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(pinX, pinY, 6);
+        dc.fillCircle(pinX, pinY, 5);
         dc.fillPolygon([
-            [pinX - 4, pinY + 3],
-            [pinX + 4, pinY + 3],
-            [pinX, pinY + 11]
+            [pinX - 3, pinY + 3],
+            [pinX + 3, pinY + 3],
+            [pinX, pinY + 9]
         ]);
         // Inner cutout so it reads like a map/location pin.
         dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
@@ -245,18 +245,18 @@ class WaqtPrayerView extends WatchUi.View {
 
         // Up/Down cues at bottom-center, close together, in orange.
         var arrowX = cx;
-        var upY = height - 34;
+        var upY = height - 32;
         var downY = height - 20;
         dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
         dc.fillPolygon([
-            [arrowX, upY - 6],
-            [arrowX - 6, upY + 4],
-            [arrowX + 6, upY + 4]
+            [arrowX, upY - 5],
+            [arrowX - 5, upY + 3],
+            [arrowX + 5, upY + 3]
         ]);
         dc.fillPolygon([
-            [arrowX, downY + 6],
-            [arrowX - 6, downY - 4],
-            [arrowX + 6, downY - 4]
+            [arrowX, downY + 5],
+            [arrowX - 5, downY - 3],
+            [arrowX + 5, downY - 3]
         ]);
     }
 }

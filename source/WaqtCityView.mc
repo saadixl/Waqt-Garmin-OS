@@ -38,15 +38,15 @@ class WaqtCityView extends WatchUi.View {
 
         // Header
         dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, 30, Graphics.FONT_XTINY, "Select City", Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(cx, 24, Graphics.FONT_XTINY, "Select City", Graphics.TEXT_JUSTIFY_CENTER);
 
         var currentCityIdx = _service.getCityIndex();
-        var itemHeight = 90;
-        var highlightedHeight = 110;
-        var gap = 5;
-        var startY = 70;
-        var textLeft = 60;
-        var textRight = width - 60;
+        var itemHeight = 92;
+        var highlightedHeight = 104;
+        var gap = 8;
+        var startY = 74;
+        var textLeft = 64;
+        var textRight = width - 64;
 
         for (var i = 0; i < 3; i++) {
             var cityIdx = (_selectionOffset - 1 + i + CityData.CITY_COUNT) % CityData.CITY_COUNT;
@@ -124,7 +124,7 @@ class WaqtCityView extends WatchUi.View {
 
             // Qibla degree (right)
             var qibla = CityData.calculateQibla(cityIdx);
-            var qiblaColor = Constants.COLOR_TEXT;
+            var qiblaColor = Constants.COLOR_GRAY;
             if (isCentered) {
                 qiblaColor = Constants.COLOR_BG;
             }
@@ -137,34 +137,34 @@ class WaqtCityView extends WatchUi.View {
                 countryColor = Constants.COLOR_TEXT;
             }
             dc.setColor(countryColor, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(textLeft, itemY + contentOffset + 50, Graphics.FONT_XTINY, CityData.getCityCountry(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
+            dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, CityData.getCityCountry(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
         }
 
         // Clock cue (city list): same color/size footprint as prayer view location icon.
-        var clockX = width - 35;
-        var clockY = cy - 90;
+        var clockX = width - 33;
+        var clockY = cy - 86;
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(clockX, clockY, 6);
+        dc.fillCircle(clockX, clockY, 5);
         dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(clockX, clockY, 4);
+        dc.fillCircle(clockX, clockY, 3);
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawLine(clockX, clockY, clockX, clockY - 2);
-        dc.drawLine(clockX, clockY, clockX + 2, clockY + 1);
+        dc.drawLine(clockX, clockY, clockX, clockY - 1);
+        dc.drawLine(clockX, clockY, clockX + 1, clockY + 1);
 
         // Up/Down cues at bottom-center, close together, in orange.
         var arrowX = cx;
-        var upY = height - 34;
+        var upY = height - 32;
         var downY = height - 20;
         dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
         dc.fillPolygon([
-            [arrowX, upY - 6],
-            [arrowX - 6, upY + 4],
-            [arrowX + 6, upY + 4]
+            [arrowX, upY - 5],
+            [arrowX - 5, upY + 3],
+            [arrowX + 5, upY + 3]
         ]);
         dc.fillPolygon([
-            [arrowX, downY + 6],
-            [arrowX - 6, downY - 4],
-            [arrowX + 6, downY - 4]
+            [arrowX, downY + 5],
+            [arrowX - 5, downY - 3],
+            [arrowX + 5, downY - 3]
         ]);
     }
 }
