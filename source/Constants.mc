@@ -12,6 +12,11 @@ module Constants {
     const COLOR_ACTIVE_DARK = 0x8A3000;    // Dark orange - gradient dark end
     const COLOR_ACTIVE_MID = 0xA63C01;     // Mid orange - gradient middle
 
+    // App metadata
+    const APP_VERSION = "1.2.0";
+    const LAST_UPDATED = "2026-04-01";
+    const CONTACT_EMAIL = "ammasudulhaque@gmail.com";
+
     // Prayer names
     const PRAYER_NAMES = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
     const PRAYER_COUNT = 6;

@@ -21,9 +21,9 @@ class WaqtPrayerDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onSelect() {
-        var cityView = new WaqtCityView(_view._service);
-        var cityDelegate = new WaqtCityDelegate(cityView, _view);
-        WatchUi.pushView(cityView, cityDelegate, WatchUi.SLIDE_UP);
+        var settingsView = new WaqtSettingsView();
+        var settingsDelegate = new WaqtSettingsDelegate(settingsView, _view);
+        WatchUi.pushView(settingsView, settingsDelegate, WatchUi.SLIDE_UP);
         return true;
     }
 

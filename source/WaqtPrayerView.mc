@@ -229,19 +229,24 @@ class WaqtPrayerView extends WatchUi.View {
             dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, remainStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
 
-        // Location-pin cue aligned with physical START button on FR970.
-        var pinX = width - 33;
-        var pinY = cy - 86;
+        // Settings cue aligned with physical START button on FR970.
+        var gearX = width - 33;
+        var gearY = cy - 86;
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(pinX, pinY, 5);
-        dc.fillPolygon([
-            [pinX - 3, pinY + 3],
-            [pinX + 3, pinY + 3],
-            [pinX, pinY + 9]
-        ]);
-        // Inner cutout so it reads like a map/location pin.
+        dc.fillCircle(gearX, gearY, 5);
+        // Inner cutout for gear ring.
         dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(pinX, pinY, 2);
+        dc.fillCircle(gearX, gearY, 2);
+        // Small teeth around the ring.
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(gearX, gearY - 7, 1);
+        dc.fillCircle(gearX, gearY + 7, 1);
+        dc.fillCircle(gearX - 7, gearY, 1);
+        dc.fillCircle(gearX + 7, gearY, 1);
+        dc.fillCircle(gearX - 5, gearY - 5, 1);
+        dc.fillCircle(gearX + 5, gearY - 5, 1);
+        dc.fillCircle(gearX - 5, gearY + 5, 1);
+        dc.fillCircle(gearX + 5, gearY + 5, 1);
 
         // Up/Down cues at bottom-center, close together, in orange.
         var arrowX = cx;

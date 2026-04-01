@@ -140,16 +140,19 @@ class WaqtCityView extends WatchUi.View {
             dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, CityData.getCityCountry(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
         }
 
-        // Clock cue (city list): same color/size footprint as prayer view location icon.
-        var clockX = width - 33;
-        var clockY = cy - 86;
+        // Tick cue (city list): indicates selection/confirmation action.
+        var tickX = width - 33;
+        var tickY = cy - 86;
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(clockX, clockY, 5);
-        dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(clockX, clockY, 3);
+        dc.drawLine(tickX - 5, tickY, tickX - 1, tickY + 4);
+        dc.drawLine(tickX - 1, tickY + 4, tickX + 6, tickY - 4);
+
+        // Back cue near physical BACK button (lower-right).
+        var backX = width - 35;
+        var backY = cy + 102;
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawLine(clockX, clockY, clockX, clockY - 1);
-        dc.drawLine(clockX, clockY, clockX + 1, clockY + 1);
+        dc.drawLine(backX + 4, backY - 5, backX - 3, backY);
+        dc.drawLine(backX - 3, backY, backX + 4, backY + 5);
 
         // Up/Down cues at bottom-center, close together, in orange.
         var arrowX = cx;
