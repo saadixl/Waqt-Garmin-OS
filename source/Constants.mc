@@ -13,7 +13,7 @@ module Constants {
     const COLOR_ACTIVE_MID = 0xA63C01;     // Mid orange - gradient middle
 
     // App metadata
-    const APP_VERSION = "1.2.0";
+    const APP_VERSION = "1.2.1";
     const LAST_UPDATED = "2026-04-01";
     const CONTACT_EMAIL = "ammasudulhaque@gmail.com";
 
