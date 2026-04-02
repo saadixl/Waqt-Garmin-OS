@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Regenerate media/waqt-promo.png (1440×720) from media/source-prayer-screen.png."""
+"""Regenerate media/waqt-promo.png (1440×720) from media/source-prayer-screen.png.
+
+Left-column bullets and accents use the same green as the in-app Qibla line (see Constants.COLOR_PRIMARY).
+"""
 
 from __future__ import annotations
 
@@ -12,8 +15,9 @@ W, H = 1440, 720
 VOID = (3, 5, 6)
 BRASS_MID = (114, 96, 69)
 BRASS_LIGHT = (201, 184, 150)
-CYAN = (126, 200, 212)
-CYAN_BRIGHT = (173, 228, 238)
+# Match app Qibla accent (Constants.COLOR_PRIMARY / COLOR_PRIMARY_LIGHT)
+ACCENT = (92, 184, 138)
+ACCENT_BRIGHT = (157, 212, 176)
 IVORY = (232, 228, 220)
 IVORY_MUTED = (178, 172, 162)
 
@@ -28,9 +32,9 @@ ARIAL = "/System/Library/Fonts/Supplemental/Arial.ttf"
 def _gradient_footer(draw: ImageDraw.ImageDraw) -> None:
     for x in range(W):
         t = x / max(W - 1, 1)
-        r = int(BRASS_MID[0] * (1 - t) + CYAN[0] * t)
-        g = int(BRASS_MID[1] * (1 - t) + CYAN[1] * t)
-        b = int(BRASS_MID[2] * (1 - t) + CYAN[2] * t)
+        r = int(BRASS_MID[0] * (1 - t) + ACCENT[0] * t)
+        g = int(BRASS_MID[1] * (1 - t) + ACCENT[1] * t)
+        b = int(BRASS_MID[2] * (1 - t) + ACCENT[2] * t)
         draw.line([(x, H - 3), (x, H)], fill=(r, g, b))
 
 
@@ -49,7 +53,7 @@ def build() -> Image.Image:
     canvas = Image.alpha_composite(canvas, gb)
 
     gc = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(gc).ellipse((860, -180, 1560, 420), fill=(*CYAN, 32))
+    ImageDraw.Draw(gc).ellipse((860, -180, 1560, 420), fill=(*ACCENT, 32))
     canvas = Image.alpha_composite(canvas, gc)
 
     d = ImageDraw.Draw(canvas)
@@ -58,7 +62,7 @@ def build() -> Image.Image:
     f_sub = _font(ARIAL, 26)
     f_li = _font(ARIAL, 22)
 
-    d.text((72, 128), "CONNECT IQ", fill=(*CYAN_BRIGHT, 255), font=f_eyebrow)
+    d.text((72, 128), "CONNECT IQ", fill=(*ACCENT_BRIGHT, 255), font=f_eyebrow)
     d.text((72, 168), "Waqt", fill=(*IVORY, 255), font=f_title)
     d.text((72, 312), "ISLAMIC PRAYER TIMES APP FOR GARMIN", fill=(*BRASS_LIGHT, 255), font=f_sub)
 
@@ -69,7 +73,7 @@ def build() -> Image.Image:
         "AUTO LOCATION DETECTION (GPS)",
         "QIBLA COMPASS",
     ):
-        d.ellipse((72, y + 8, 82, y + 18), fill=(*CYAN, 255))
+        d.ellipse((72, y + 8, 82, y + 18), fill=(*ACCENT, 255))
         d.text((96, y), line, fill=(*IVORY_MUTED, 255), font=f_li)
         y += 34
 
