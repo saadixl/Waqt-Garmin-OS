@@ -1,3 +1,4 @@
+using Toybox.Attention;
 using Toybox.Graphics;
 using Toybox.Math;
 using Toybox.Sensor;
@@ -8,6 +9,8 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
 
     var _service;
     var _timer = null;
+    // Latch: true while device stays within Qibla alignment band after the one-shot vibe.
+    var _qiblaAlignLatched = false;
 
     function initialize(service) {
         View.initialize();
@@ -24,6 +27,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             _timer.stop();
             _timer = null;
         }
+        _qiblaAlignLatched = false;
     }
 
     function onTick() as Void {
@@ -38,6 +42,20 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             deg -= 360.0;
         }
         return deg;
+    }
+
+    function shortestHeadingErrorDeg(qiblaDeg, headingDeg) {
+        var d = qiblaDeg - headingDeg;
+        while (d > 180.0) {
+            d -= 360.0;
+        }
+        while (d < -180.0) {
+            d += 360.0;
+        }
+        if (d < 0.0) {
+            return -d;
+        }
+        return d;
     }
 
     function onUpdate(dc) {
@@ -77,8 +95,25 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         // Live heading in degrees (0 = north, clockwise). Used to rotate the rose + hand.
         var headingDeg = 0.0;
         var info = Sensor.getInfo();
+        var headingFromSensor = false;
         if (info != null && info.heading != null) {
             headingDeg = normalizeHeadingDeg(info.heading.toFloat() * 180.0 / Math.PI);
+            headingFromSensor = true;
+        }
+
+        if (headingFromSensor) {
+            var alignErr = shortestHeadingErrorDeg(qiblaBearing, headingDeg);
+            var aligned = alignErr <= 4.0;
+            if (aligned && !_qiblaAlignLatched) {
+                if (Attention has :vibrate) {
+                    Attention.vibrate([new Attention.VibeProfile(85, 100)]);
+                }
+                _qiblaAlignLatched = true;
+            } else if (!aligned) {
+                _qiblaAlignLatched = false;
+            }
+        } else {
+            _qiblaAlignLatched = false;
         }
 
         // Two thick metal rings: outer edge ~90% screenR; wide bands (not 2× diameter).
