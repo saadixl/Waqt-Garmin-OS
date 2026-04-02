@@ -69,7 +69,7 @@ def build() -> Image.Image:
     y = 378
     for line in (
         "PRAYER TIMES WITH LIVE COUNT DOWN",
-        "TWENTY CITIES",
+        "FIFTY CITIES",
         "AUTO LOCATION DETECTION (GPS)",
         "QIBLA COMPASS",
     ):

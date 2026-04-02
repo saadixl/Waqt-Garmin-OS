@@ -21,8 +21,15 @@ class PrayerService {
     var _gpsHasFix = false;
 
     function initialize() {
+        //! cityListV3: Auto at 0; cities 1..50 east→west. Remaps v2 (Auto=50) and v1 (Auto=20).
         var saved = Storage.getValue("cityIndex");
-        if (saved != null && saved >= 0 && saved < CityData.LOCATION_COUNT) {
+        var v3 = Storage.getValue("cityListV3");
+        if (v3 == null) {
+            var v2 = Storage.getValue("cityListV2");
+            _cityIndex = CityData.migrateLegacyCityIndex(saved, v2);
+            Storage.setValue("cityListV3", 1);
+            Storage.setValue("cityIndex", _cityIndex);
+        } else if (saved != null && saved >= 0 && saved < CityData.LOCATION_COUNT) {
             _cityIndex = saved;
         }
     }

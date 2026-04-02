@@ -1,6 +1,6 @@
 # Waqt - Garmin OS
 
-A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). The UI uses a **brass and cyan** theme aligned with the Qibla compass: warm brass bezels and accents, soft cyan for “next” cues and the live needle, and ivory/white typography on deep black. **Auto location detection (GPS)** is available alongside **20 named cities** for prayer times and Qibla.
+A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). The UI uses a **brass and cyan** theme aligned with the Qibla compass: warm brass bezels and accents, soft cyan for “next” cues and the live needle, and ivory/white typography on deep black. **Auto location detection (GPS)** is available alongside **50 named cities** for prayer times and Qibla.
 
 
 ## Features
@@ -38,15 +38,15 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 
 ### City selection view
 - Open from **Settings → Location**.
-- **20 cities** plus **Auto detect** (GPS). Each row shows **qibla direction** (`--°` for Auto until a fix). **Up / Down** moves selection; **Select** confirms and refreshes prayer times.
+- **Auto detect** (GPS) is the **first** row, then **50 cities** sorted **east to west** by longitude. Each row shows **qibla direction** (`--°` for Auto until a fix). **Up / Down** moves selection; **Select** confirms and refreshes prayer times.
 - Selection uses the **same brass highlight** pattern as the prayer screen.
 - Selected location (city index, including Auto detect) is persisted across app launches.
 
 <img width="480" height="auto" alt="3" src="https://github.com/user-attachments/assets/aa015add-c03b-441e-a5dc-fd4f07dd9cee" />
 
 ## Supported locations
-- **Auto detect** — prayer times and Qibla from **GPS** (when a fix is available).
-- **20 cities**: Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Dubai, Tehran, Doha, Moscow, Makkah, Istanbul, Paris, London, Toronto, New York, Austin, San Francisco
+- **Auto detect** — prayer times and Qibla from **GPS** (when a fix is available). Listed first in the app.
+- **50 cities** (east → west): Brisbane, Sydney, Melbourne, Tokyo, Jakarta, Singapore, Kuala Lumpur, Dhaka, New Delhi, Mumbai, Tashkent, Karachi, Dubai, Abu Dhabi, Tehran, Doha, Kuwait City, Riyadh, Baghdad, Makkah, Medina, Moscow, Nairobi, Amman, Beirut, Khartoum, Cairo, Istanbul, Cape Town, Berlin, Rome, Tunis, Amsterdam, Lagos, Algiers, Paris, Barcelona, London, Birmingham, Madrid, Casablanca, New York, Toronto, Miami, Chicago, Houston, Austin, Los Angeles, San Francisco, Vancouver
 
 ## Supported Devices
 - Garmin Forerunner 165
