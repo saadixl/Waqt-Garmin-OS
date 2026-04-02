@@ -68,11 +68,13 @@ class PrayerService {
             if (deg != null && deg.size() >= 2) {
                 _autoLat = deg[0].toFloat();
                 _autoLon = deg[1].toFloat();
-                _gpsHasFix = true;
                 if (info has :altitude && info.altitude != null) {
                     _autoElevMeters = info.altitude.toFloat();
                 } else {
                     _autoElevMeters = 0.0;
+                }
+                if (coordsValidForApi(_autoLat, _autoLon)) {
+                    _gpsHasFix = true;
                 }
             }
         }
@@ -103,12 +105,24 @@ class PrayerService {
         return CityData.getCityName(_cityIndex);
     }
 
-    //! Qibla degrees for city list row when highlighting Auto detect (needs GPS).
+    //! Qibla degrees for city list row when highlighting Auto detect (needs live GPS).
     function getAutoMenuQiblaDegrees() {
         if (!_gpsHasFix) {
             return null;
         }
         return CityData.bearingFromLatLonDegrees(_autoLat, _autoLon);
+    }
+
+    //! Dot-decimal only — string concat can use locale commas; Aladhan returns HTTP 400.
+    function formatCoordForUrl(coord as Toybox.Lang.Float) as Toybox.Lang.String {
+        return coord.format("%.6f");
+    }
+
+    function coordsValidForApi(lat as Toybox.Lang.Float, lon as Toybox.Lang.Float) as Toybox.Lang.Boolean {
+        if (lat < -90.0 || lat > 90.0 || lon < -180.0 || lon > 180.0) {
+            return false;
+        }
+        return true;
     }
 
     function fetchPrayerTimes(callback) {
@@ -118,10 +132,12 @@ class PrayerService {
         var lat;
         var lon;
 
+        var elevForUrl = 0.0;
+
         if (CityData.isAutoDetect(_cityIndex)) {
             sampleGpsFromPosition();
             if (!_gpsHasFix) {
-                _lastFetchError = "Need GPS fix";
+                _lastFetchError = "Need GPS fix\nSettings: Refresh GPS";
                 if (_callback != null) {
                     _callback.invoke(false);
                 }
@@ -129,6 +145,7 @@ class PrayerService {
             }
             lat = _autoLat;
             lon = _autoLon;
+            elevForUrl = _autoElevMeters;
             var watchOffsetSec = System.getClockTime().timeZoneOffset;
             _cityTimezoneOffset = (watchOffsetSec * 10) / 3600;
         } else {
@@ -137,12 +154,24 @@ class PrayerService {
             lon = CityData.getCityLon(_cityIndex).toFloat() / 10000.0;
         }
 
+        if (!coordsValidForApi(lat, lon)) {
+            if (CityData.isAutoDetect(_cityIndex)) {
+                _lastFetchError = "GPS not working\nSettings: Refresh GPS";
+            } else {
+                _lastFetchError = "Invalid coordinates";
+            }
+            if (_callback != null) {
+                _callback.invoke(false);
+            }
+            return;
+        }
+
         var now = Time.now();
         var timestamp = now.value();
 
-        var url = "https://api.aladhan.com/v1/timings/" + timestamp + "?latitude=" + lat + "&longitude=" + lon;
-        if (CityData.isAutoDetect(_cityIndex) && _autoElevMeters != 0.0) {
-            var el = _autoElevMeters.toNumber();
+        var url = "https://api.aladhan.com/v1/timings/" + timestamp + "?latitude=" + formatCoordForUrl(lat) + "&longitude=" + formatCoordForUrl(lon);
+        if (CityData.isAutoDetect(_cityIndex) && elevForUrl != 0.0) {
+            var el = elevForUrl.toNumber();
             if (el < 0) {
                 el = -el;
             }
@@ -183,7 +212,17 @@ class PrayerService {
                 _callback.invoke(true);
             }
         } else {
-            _lastFetchError = "Failed to load";
+            if (CityData.isAutoDetect(_cityIndex)) {
+                _lastFetchError = "GPS / prayer load failed\nSettings: Refresh GPS";
+            } else if (responseCode == null || responseCode == 0) {
+                _lastFetchError = "No connection";
+            } else if (responseCode != 200) {
+                _lastFetchError = "HTTP " + responseCode;
+            } else if (data == null) {
+                _lastFetchError = "No data";
+            } else {
+                _lastFetchError = "Bad response";
+            }
             if (_callback != null) {
                 _callback.invoke(false);
             }

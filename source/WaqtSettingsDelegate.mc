@@ -25,14 +25,20 @@ class WaqtSettingsDelegate extends WatchUi.BehaviorDelegate {
         var idx = _settingsView.getSelectedIndex();
 
         if (idx == 0) {
+            var qiblaView = new WaqtQiblaView(_prayerView._service);
+            var qiblaDelegate = new WaqtQiblaDelegate();
+            WatchUi.pushView(qiblaView, qiblaDelegate, WatchUi.SLIDE_LEFT);
+        } else if (idx == 1) {
             // Push city list so back returns to settings.
             var cityView = new WaqtCityView(_prayerView._service);
             var cityDelegate = new WaqtCityDelegate(cityView, _prayerView);
             WatchUi.pushView(cityView, cityDelegate, WatchUi.SLIDE_LEFT);
-        } else if (idx == 1) {
-            var qiblaView = new WaqtQiblaView(_prayerView._service);
-            var qiblaDelegate = new WaqtQiblaDelegate();
-            WatchUi.pushView(qiblaView, qiblaDelegate, WatchUi.SLIDE_LEFT);
+        } else if (idx == 2) {
+            _prayerView._service.sampleGpsFromPosition();
+            if (CityData.isAutoDetect(_prayerView._service.getCityIndex())) {
+                _prayerView.refreshData();
+            }
+            WatchUi.popView(WatchUi.SLIDE_DOWN);
         } else {
             var aboutView = new WaqtAboutView();
             var aboutDelegate = new WaqtAboutDelegate();

@@ -1,7 +1,6 @@
 using Toybox.Attention;
 using Toybox.Graphics;
 using Toybox.Math;
-using Toybox.Position;
 using Toybox.Sensor;
 using Toybox.Timer;
 using Toybox.WatchUi;
@@ -38,15 +37,13 @@ class WaqtQiblaView extends WatchUi.View {
     function applyLocation() {
         var cityIdx = _service.getCityIndex();
         if (CityData.isAutoDetect(cityIdx)) {
-            _hasFix = false;
-            var info = Position.getInfo();
-            if (info != null && info has :position && info.position != null) {
-                var deg = info.position.toDegrees();
-                if (deg != null && deg.size() >= 2) {
-                    _lat = deg[0];
-                    _lon = deg[1];
-                    _hasFix = true;
-                }
+            _service.sampleGpsFromPosition();
+            if (_service.hasGpsFix()) {
+                _lat = _service.getAutoLat();
+                _lon = _service.getAutoLon();
+                _hasFix = true;
+            } else {
+                _hasFix = false;
             }
         } else {
             _lat = CityData.getCityLat(cityIdx).toFloat() / 10000.0;
@@ -455,7 +452,8 @@ class WaqtQiblaView extends WatchUi.View {
 
         if (!_hasFix && CityData.isAutoDetect(cityIdx)) {
             dc.setColor(Constants.COLOR_ERROR, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(cx, compassCy, Graphics.FONT_XTINY, "Open sky for GPS", textJust);
+            dc.drawText(cx, compassCy - 10, Graphics.FONT_XTINY, "Open sky for GPS", textJust);
+            dc.drawText(cx, compassCy + 10, Graphics.FONT_XTINY, "Settings: Refresh GPS", textJust);
             var backX = width - 35;
             var backY = cy + 106;
             dc.setColor(cBrassOuter, Graphics.COLOR_TRANSPARENT);

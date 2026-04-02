@@ -1,29 +1,30 @@
 # Waqt - Garmin OS
 
-A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). The UI uses a **brass and cyan** theme aligned with the Qibla compass: warm brass bezels and accents, soft cyan for “next” cues and the live needle, and ivory/white typography on deep black. **Auto location detection (GPS)** is available alongside **50 named cities** for prayer times and Qibla.
+A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). The UI uses a **brass and green** theme aligned with the Qibla compass: warm brass bezels and accents, soft **green** for “next” prayer cues and the live needle on the prayer screen, and ivory/white typography on deep black. **Auto location detection (GPS)** is available alongside **50 named cities** (listed east to west) for prayer times and Qibla.
 
 
 ## Features
 
 ### Prayer times view
 - Center-focused list: the **selected** prayer sits in a **solid brass** bar (same tone as the Qibla outer ring) with a **light brass accent** on the slanted leading edge.
-- **Outer** rows use subtle, round-aware inset panels; the **next** prayer (when not in the center slot) gets a slightly lifted panel and a **cyan pip** beside the name.
-- **Header**: **city name** for a fixed location, or **coordinates** (e.g. `12.3N 77.6E`) when **Auto detect** is selected and GPS has a fix. **Qibla bearing** in cyan with a soft lift, and a **double hairline** separating the header from the list.
-- **Auto location**: choose **Auto detect** under **Set Location** to fetch prayer times from [Aladhan](https://aladhan.com/prayer-times-api) using **live latitude/longitude** (and **elevation** when the device reports it). Requires a GPS fix and the usual phone-connected HTTP path.
-- Countdown behaviour unchanged: full countdown for the next prayer (and for the centered row); shorter remaining-time hints on other rows. Colours are tuned so the center row reads crisply on brass, with teal-muted lines elsewhere.
+- **Outer** rows use subtle, round-aware inset panels; the **next** prayer (when not in the center slot) gets a slightly lifted panel and a **green** accent beside the name.
+- **Header**: **city name** for a fixed location, or **coordinates** (e.g. `12.3N 77.6E`) when **Auto detect** is selected and there is a **current GPS fix**. **Qibla bearing** in green with a soft lift, and a **double hairline** separating the header from the list.
+- **Auto location**: choose **Auto detect** under **Set Location** to fetch prayer times from [Aladhan](https://aladhan.com/prayer-times-api) using **live** latitude/longitude (and **elevation** when the device reports it). No stale GPS is kept—use **Settings → Refresh GPS** to sample again. Prayer requests use dot-decimal coordinates in the API URL (avoids HTTP 400 from locale formatting). Requires the usual phone-connected HTTP path via Garmin Connect Mobile.
+- Countdown behaviour: full countdown for the next prayer (and for the centered row); shorter remaining-time hints on other rows. Colours are tuned so the center row reads crisply on brass, with muted lines elsewhere.
 - **Up / Down** scrolls the list. **Select/Start** opens Settings.
-- **Chrome**: brass **scroll chevrons** (beveled shadow + highlight) and a **settings** cue (brass bezel ring, cyan center jewel) near the physical control cluster on supported models.
-- **Loading** shows brass primary copy with a subtle teal ellipsis; **errors** show a clear system-style message.
+- **Chrome**: brass **scroll chevrons** (beveled shadow + highlight) and a **settings** cue (brass bezel ring, green center jewel) near the physical control cluster on supported models.
+- **Loading** shows brass primary copy with a subtle ellipsis; **errors** are explicit. In **Auto** mode, GPS-related failures suggest **Settings → Refresh GPS** on a second line; fixed-city failures may show **No connection** / **HTTP** codes.
 
 <img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/5624fc49-6e45-4799-981e-8036a55af475" />
 
 ### Settings view
 - Press Select/Start on the prayer view to open Settings.
-- Rotating **center-selected** menu with the **same brass bar + slanted accent** treatment as the prayer and city lists.
-- Menu items:
-  - Set Location
-  - Find Qibla
-  - About
+- Rotating **center-selected** menu with the **same brass bar + slanted accent** treatment as the prayer and city lists. **Find Qibla** is the default highlighted row when you open Settings.
+- Menu items (in order):
+  - **Find Qibla** — opens the compass (back returns to Settings).
+  - **Set Location** — opens the location list: Auto detect + 50 cities (back returns to Settings).
+  - **Refresh GPS** — samples GPS again; if **Auto detect** is selected, **refetches prayer times** and then **returns to the prayer screen** (pops Settings).
+  - **About** — version and last-updated info.
 
 <img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/267db731-37d1-4f6b-8f2b-6a4c8ad805ba" />
 
@@ -31,21 +32,21 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 ### Find Qibla view
 - Live **compass**; **heading** comes from the device sensor when available.
 - **Fixed city**: bearing and label use that city’s coordinates.
-- **Auto detect**: bearing uses **GPS** (same fix as prayer times); label shows coordinates when locked.
+- **Auto detect**: uses **live GPS** only (same as prayer times); no position without a current fix.
 - **Kaaba** marker on the outer ring; **green-night** face, brass rings, and a **lancet-style** needle (green tones on this screen) with shadow, rim, glint, and hub stack.
 
 <img width="480" height="auto" alt="4" src="https://github.com/user-attachments/assets/30207621-3b22-4882-80ef-98e8e2c64eb9" />
 
 ### City selection view
 - Open from **Settings → Set Location**.
-- **Auto detect** (GPS) is the **first** row, then **50 cities** sorted **east to west** by longitude. Each row shows **qibla direction** (`--°` for Auto until a fix). **Up / Down** moves selection; **Select** confirms and refreshes prayer times.
+- **Auto detect** (GPS) is the **first** row, then **50 cities** sorted **east to west** by longitude. Each row shows **qibla direction** (`--°` for Auto until a live GPS fix). **Up / Down** moves selection; **Select** confirms and refreshes prayer times.
 - Selection uses the **same brass highlight** pattern as the prayer screen.
-- Selected location (city index, including Auto detect) is persisted across app launches.
+- Selected location (including Auto detect) is **persisted** in app storage across launches (with a one-time migration when the list layout changed).
 
 <img width="480" height="auto" alt="3" src="https://github.com/user-attachments/assets/aa015add-c03b-441e-a5dc-fd4f07dd9cee" />
 
 ## Supported locations
-- **Auto detect** — prayer times and Qibla from **GPS** (when a fix is available). Listed first in the app.
+- **Auto detect** — prayer times and Qibla from **live GPS** only. Listed first in the app. Use **Refresh GPS** in Settings if you need a new sample.
 - **50 cities** (east → west): Brisbane, Sydney, Melbourne, Tokyo, Jakarta, Singapore, Kuala Lumpur, Dhaka, New Delhi, Mumbai, Tashkent, Karachi, Dubai, Abu Dhabi, Tehran, Doha, Kuwait City, Riyadh, Baghdad, Makkah, Medina, Moscow, Nairobi, Amman, Beirut, Khartoum, Cairo, Istanbul, Cape Town, Berlin, Rome, Tunis, Amsterdam, Lagos, Algiers, Paris, Barcelona, London, Birmingham, Madrid, Casablanca, New York, Toronto, Miami, Chicago, Houston, Austin, Los Angeles, San Francisco, Vancouver
 
 ## Supported Devices
@@ -76,7 +77,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 - **Release**: install or publish the generated `.iq` package.
 
 ## Promo image
-The Connect IQ–style landscape banner `media/waqt-promo.png` (**1440×720**) is generated from the latest on-device prayer UI screenshot so store and Readme art stay in sync with the brass / cyan design. The left-hand feature list includes **auto location detection (GPS)** alongside prayer times, cities, and Qibla.
+The Connect IQ–style landscape banner `media/waqt-promo.png` (**1440×720**) is generated from `media/source-prayer-screen.png` so store art matches the current prayer UI. The left-hand feature list uses **green** accents (same family as the in-app Qibla line) and calls out **FIFTY CITIES** and **auto location (GPS)**.
 
 1. Replace `media/source-prayer-screen.png` with a current export or photo (same aspect as your reference frame is fine; the script scales it).
 2. Install [Pillow](https://pypi.org/project/pillow/) if needed: `pip install pillow`
@@ -88,4 +89,5 @@ This overwrites `media/waqt-promo.png`. Typography uses macOS **Georgia** and **
 - https://api.aladhan.com/v1 API is used to fetch prayer times.
 - The app requires a phone with the Garmin Connect Mobile app for API requests (Garmin watches route HTTP requests through the phone via Bluetooth).
 - **Sensor** permission: live heading on the Find Qibla compass page.
-- **Positioning** permission: GPS for **Auto detect** (prayer times and Qibla when that mode is selected).
+- **Positioning** permission: GPS for **Auto detect** (prayer times and Qibla) and **Refresh GPS**.
+- **Simulator**: GPS and phone-routed HTTP are often unreliable; use a **named city** to verify API behaviour, or test on a paired watch and phone.

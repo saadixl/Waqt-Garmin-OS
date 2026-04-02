@@ -1,7 +1,6 @@
 using Toybox.Graphics;
 using Toybox.WatchUi;
 using Toybox.Timer;
-using Toybox.System;
 
 class WaqtPrayerView extends WatchUi.View {
 
@@ -105,7 +104,15 @@ class WaqtPrayerView extends WatchUi.View {
 
         if (_errorMessage != null) {
             dc.setColor(Constants.COLOR_ERROR, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(cx, cy - 10, Graphics.FONT_XTINY, _errorMessage, Graphics.TEXT_JUSTIFY_CENTER);
+            var nl = _errorMessage.find("\n");
+            if (nl == null) {
+                dc.drawText(cx, cy - 10, Graphics.FONT_XTINY, _errorMessage, Graphics.TEXT_JUSTIFY_CENTER);
+            } else {
+                var lineA = _errorMessage.substring(0, nl);
+                var lineB = _errorMessage.substring(nl + 1, _errorMessage.length());
+                dc.drawText(cx, cy - 24, Graphics.FONT_XTINY, lineA, Graphics.TEXT_JUSTIFY_CENTER);
+                dc.drawText(cx, cy - 6, Graphics.FONT_XTINY, lineB, Graphics.TEXT_JUSTIFY_CENTER);
+            }
             return;
         }
 
