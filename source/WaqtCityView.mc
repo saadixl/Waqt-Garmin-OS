@@ -12,17 +12,22 @@ class WaqtCityView extends WatchUi.View {
         _selectionOffset = service.getCityIndex();
     }
 
+    function onShow() {
+        _service.sampleGpsFromPosition();
+        WatchUi.requestUpdate();
+    }
+
     function getSelectedIndex() {
         return _selectionOffset;
     }
 
     function scrollUp() {
-        _selectionOffset = (_selectionOffset - 1 + CityData.CITY_COUNT) % CityData.CITY_COUNT;
+        _selectionOffset = (_selectionOffset - 1 + CityData.LOCATION_COUNT) % CityData.LOCATION_COUNT;
         WatchUi.requestUpdate();
     }
 
     function scrollDown() {
-        _selectionOffset = (_selectionOffset + 1) % CityData.CITY_COUNT;
+        _selectionOffset = (_selectionOffset + 1) % CityData.LOCATION_COUNT;
         WatchUi.requestUpdate();
     }
 
@@ -48,7 +53,7 @@ class WaqtCityView extends WatchUi.View {
         var textRight = width - 64;
 
         for (var i = 0; i < 3; i++) {
-            var cityIdx = (_selectionOffset - 1 + i + CityData.CITY_COUNT) % CityData.CITY_COUNT;
+            var cityIdx = (_selectionOffset - 1 + i + CityData.LOCATION_COUNT) % CityData.LOCATION_COUNT;
             var isCentered = (i == 1);
             var isCurrentCity = (cityIdx == currentCityIdx);
 
@@ -118,7 +123,17 @@ class WaqtCityView extends WatchUi.View {
             }
 
             // Qibla degree (right)
-            var qibla = CityData.calculateQibla(cityIdx);
+            var qiblaStr;
+            if (CityData.isAutoDetect(cityIdx)) {
+                var qAuto = _service.getAutoMenuQiblaDegrees();
+                if (qAuto == null) {
+                    qiblaStr = "--\u00B0";
+                } else {
+                    qiblaStr = qAuto + "\u00B0";
+                }
+            } else {
+                qiblaStr = CityData.calculateQibla(cityIdx) + "\u00B0";
+            }
             var qiblaColor = Constants.COLOR_GRAY;
             if (isCentered) {
                 qiblaColor = Graphics.COLOR_WHITE;
@@ -126,9 +141,9 @@ class WaqtCityView extends WatchUi.View {
                 qiblaColor = Constants.COLOR_PRIMARY;
             }
             dc.setColor(qiblaColor, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(textRight, itemY + contentOffset + 4, Graphics.FONT_XTINY, qibla + "\u00B0", Graphics.TEXT_JUSTIFY_RIGHT);
+            dc.drawText(textRight, itemY + contentOffset + 4, Graphics.FONT_XTINY, qiblaStr, Graphics.TEXT_JUSTIFY_RIGHT);
             if (isCentered) {
-                dc.drawText(textRight + 1, itemY + contentOffset + 4, Graphics.FONT_XTINY, qibla + "\u00B0", Graphics.TEXT_JUSTIFY_RIGHT);
+                dc.drawText(textRight + 1, itemY + contentOffset + 4, Graphics.FONT_XTINY, qiblaStr, Graphics.TEXT_JUSTIFY_RIGHT);
             }
 
             // Country name below city - with clear gap

@@ -1,6 +1,6 @@
 using Toybox.WatchUi;
 
-class WaqtQiblaPlaceholderDelegate extends WatchUi.BehaviorDelegate {
+class WaqtQiblaDelegate extends WatchUi.BehaviorDelegate {
 
     function initialize() {
         BehaviorDelegate.initialize();

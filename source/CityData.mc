@@ -7,6 +7,9 @@ module CityData {
     const MECCA_LON = 398262;  // 39.8262
 
     const CITY_COUNT = 20;
+    //! Extra menu row after all cities — uses GPS + same lat/lon as prayer times.
+    const AUTO_DETECT_INDEX = 20;
+    const LOCATION_COUNT = 21;
 
     const CITY_NAMES = [
         "Singapore",
@@ -126,15 +129,28 @@ module CityData {
         -1224194  // San Francisco -122.4194
     ];
 
+    function isAutoDetect(index) {
+        return index == AUTO_DETECT_INDEX;
+    }
+
     function getCityName(index) {
+        if (index == AUTO_DETECT_INDEX) {
+            return "Auto detect";
+        }
         return CITY_NAMES[index];
     }
 
     function getCityCountry(index) {
+        if (index == AUTO_DETECT_INDEX) {
+            return "GPS";
+        }
         return CITY_COUNTRIES[index];
     }
 
     function getCityUtcOffset(index) {
+        if (index == AUTO_DETECT_INDEX) {
+            return 0;
+        }
         return CITY_UTC_OFFSETS[index];
     }
 
@@ -146,7 +162,28 @@ module CityData {
         return CITY_LONS[index];
     }
 
+    //! Great-circle bearing to Kaaba from WGS84 degrees (same math as calculateQibla).
+    function bearingFromLatLonDegrees(lat, lon) {
+        var lat1 = lat * Math.PI / 180.0;
+        var lon1 = lon * Math.PI / 180.0;
+        var lat2 = MECCA_LAT.toFloat() / 10000.0 * Math.PI / 180.0;
+        var lon2 = MECCA_LON.toFloat() / 10000.0 * Math.PI / 180.0;
+
+        var dLon = lon2 - lon1;
+
+        var y = Math.sin(dLon) * Math.cos(lat2);
+        var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+
+        var bearing = Math.atan2(y, x) * 180.0 / Math.PI;
+        bearing = ((bearing + 360.0).toNumber()) % 360;
+
+        return bearing.toNumber();
+    }
+
     function calculateQibla(cityIndex) {
+        if (cityIndex == AUTO_DETECT_INDEX) {
+            return 0;
+        }
         var lat1 = CITY_LATS[cityIndex].toFloat() / 10000.0;
         var lon1 = CITY_LONS[cityIndex].toFloat() / 10000.0;
         var lat2 = MECCA_LAT.toFloat() / 10000.0;

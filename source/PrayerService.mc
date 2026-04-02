@@ -3,22 +3,26 @@ using Toybox.System;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Application.Storage;
+using Toybox.Position;
 
 class PrayerService {
 
     var _callback = null;
     var _cityIndex = 0;
 
-    // Cached prayer times as array of strings in 24h format ["HH:MM", ...]
     var _prayerTimes24h = null;
-    // Cached prayer times formatted for display ["h:mm AM/PM", ...]
     var _prayerTimesFormatted = null;
-    // City timezone offset * 10
     var _cityTimezoneOffset = 0;
+    var _lastFetchError = null;
+
+    var _autoLat = 0.0;
+    var _autoLon = 0.0;
+    var _autoElevMeters = 0.0;
+    var _gpsHasFix = false;
 
     function initialize() {
         var saved = Storage.getValue("cityIndex");
-        if (saved != null) {
+        if (saved != null && saved >= 0 && saved < CityData.LOCATION_COUNT) {
             _cityIndex = saved;
         }
     }
@@ -32,17 +36,111 @@ class PrayerService {
         Storage.setValue("cityIndex", index);
     }
 
+    function getLastFetchError() {
+        return _lastFetchError;
+    }
+
+    function hasGpsFix() {
+        return _gpsHasFix;
+    }
+
+    function getAutoLat() {
+        return _autoLat;
+    }
+
+    function getAutoLon() {
+        return _autoLon;
+    }
+
+    //! Refresh GPS sample (call before fetch or Qibla when using auto location).
+    function sampleGpsFromPosition() {
+        _gpsHasFix = false;
+        var info = Position.getInfo();
+        if (info != null && info has :position && info.position != null) {
+            var deg = info.position.toDegrees();
+            if (deg != null && deg.size() >= 2) {
+                _autoLat = deg[0].toFloat();
+                _autoLon = deg[1].toFloat();
+                _gpsHasFix = true;
+                if (info has :altitude && info.altitude != null) {
+                    _autoElevMeters = info.altitude.toFloat();
+                } else {
+                    _autoElevMeters = 0.0;
+                }
+            }
+        }
+    }
+
+    //! Short coordinate line for prayer header when auto detect is on.
+    function formatCoordsShort(lat, lon) {
+        var ns = "N";
+        if (lat < 0.0) {
+            ns = "S";
+            lat = -lat;
+        }
+        var ew = "E";
+        if (lon < 0.0) {
+            ew = "W";
+            lon = -lon;
+        }
+        return lat.format("%.1f") + ns + " " + lon.format("%.1f") + ew;
+    }
+
+    function getPrayerHeaderLocationLabel() {
+        if (CityData.isAutoDetect(_cityIndex)) {
+            if (_gpsHasFix) {
+                return formatCoordsShort(_autoLat, _autoLon);
+            }
+            return "Acquiring GPS...";
+        }
+        return CityData.getCityName(_cityIndex);
+    }
+
+    //! Qibla degrees for city list row when highlighting Auto detect (needs GPS).
+    function getAutoMenuQiblaDegrees() {
+        if (!_gpsHasFix) {
+            return null;
+        }
+        return CityData.bearingFromLatLonDegrees(_autoLat, _autoLon);
+    }
+
     function fetchPrayerTimes(callback) {
         _callback = callback;
-        _cityTimezoneOffset = CityData.getCityUtcOffset(_cityIndex);
+        _lastFetchError = null;
 
-        var lat = CityData.getCityLat(_cityIndex).toFloat() / 10000.0;
-        var lon = CityData.getCityLon(_cityIndex).toFloat() / 10000.0;
+        var lat;
+        var lon;
+
+        if (CityData.isAutoDetect(_cityIndex)) {
+            sampleGpsFromPosition();
+            if (!_gpsHasFix) {
+                _lastFetchError = "Need GPS fix";
+                if (_callback != null) {
+                    _callback.invoke(false);
+                }
+                return;
+            }
+            lat = _autoLat;
+            lon = _autoLon;
+            var watchOffsetSec = System.getClockTime().timeZoneOffset;
+            _cityTimezoneOffset = (watchOffsetSec * 10) / 3600;
+        } else {
+            _cityTimezoneOffset = CityData.getCityUtcOffset(_cityIndex);
+            lat = CityData.getCityLat(_cityIndex).toFloat() / 10000.0;
+            lon = CityData.getCityLon(_cityIndex).toFloat() / 10000.0;
+        }
 
         var now = Time.now();
         var timestamp = now.value();
 
         var url = "https://api.aladhan.com/v1/timings/" + timestamp + "?latitude=" + lat + "&longitude=" + lon;
+        if (CityData.isAutoDetect(_cityIndex) && _autoElevMeters != 0.0) {
+            var el = _autoElevMeters.toNumber();
+            if (el < 0) {
+                el = -el;
+            }
+            url = url + "&elevation=" + el;
+        }
 
         Communications.makeWebRequest(
             url,
@@ -78,13 +176,13 @@ class PrayerService {
                 _callback.invoke(true);
             }
         } else {
+            _lastFetchError = "Failed to load";
             if (_callback != null) {
                 _callback.invoke(false);
             }
         }
     }
 
-    // Convert "HH:MM" or "HH:MM (TZ)" to "h:mm AM/PM"
     function formatTo12h(time24) {
         var spaceIdx = time24.find(" ");
         var timeStr = time24;
@@ -111,7 +209,6 @@ class PrayerService {
         return hour.toString() + ":" + minStr + " " + suffix;
     }
 
-    // Get the index of the next upcoming prayer (0-5)
     function getNextPrayerIndex() {
         if (_prayerTimes24h == null) {
             return 0;
@@ -142,7 +239,6 @@ class PrayerService {
         return 0;
     }
 
-    // Parse "HH:MM" or "HH:MM (TZ)" to minutes since midnight
     function parseTimeToMinutes(time24) {
         var spaceIdx = time24.find(" ");
         var timeStr = time24;
@@ -157,7 +253,6 @@ class PrayerService {
         return hour * 60 + min;
     }
 
-    // Calculate seconds remaining until a prayer
     function getSecondsUntilPrayer(prayerIndex) {
         if (_prayerTimes24h == null) {
             return 0;
@@ -189,7 +284,6 @@ class PrayerService {
         return diff;
     }
 
-    // Format seconds as "hh:mm:ss" countdown
     function formatCountdown(seconds) {
         var h = seconds / 3600;
         var m = (seconds % 3600) / 60;
@@ -198,7 +292,6 @@ class PrayerService {
         return h.format("%02d") + ":" + m.format("%02d") + ":" + s.format("%02d");
     }
 
-    // Format seconds as "Xh Ym" short format
     function formatShortTime(seconds) {
         var h = seconds / 3600;
         var m = (seconds % 3600) / 60;

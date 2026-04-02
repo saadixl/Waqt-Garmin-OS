@@ -1,15 +1,18 @@
 using Toybox.Attention;
 using Toybox.Graphics;
 using Toybox.Math;
+using Toybox.Position;
 using Toybox.Sensor;
 using Toybox.Timer;
 using Toybox.WatchUi;
 
-class WaqtQiblaPlaceholderView extends WatchUi.View {
+class WaqtQiblaView extends WatchUi.View {
 
     var _service;
     var _timer = null;
-    // Latch: true while device stays within Qibla alignment band after the one-shot vibe.
+    var _lat = 0.0;
+    var _lon = 0.0;
+    var _hasFix = false;
     var _qiblaAlignLatched = false;
 
     function initialize(service) {
@@ -20,6 +23,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
     function onShow() {
         _timer = new Timer.Timer();
         _timer.start(method(:onTick), 500, true);
+        applyLocation();
     }
 
     function onHide() {
@@ -30,8 +34,44 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         _qiblaAlignLatched = false;
     }
 
+    //! Auto: GPS poll. Fixed city: coordinates from CityData.
+    function applyLocation() {
+        var cityIdx = _service.getCityIndex();
+        if (CityData.isAutoDetect(cityIdx)) {
+            _hasFix = false;
+            var info = Position.getInfo();
+            if (info != null && info has :position && info.position != null) {
+                var deg = info.position.toDegrees();
+                if (deg != null && deg.size() >= 2) {
+                    _lat = deg[0];
+                    _lon = deg[1];
+                    _hasFix = true;
+                }
+            }
+        } else {
+            _lat = CityData.getCityLat(cityIdx).toFloat() / 10000.0;
+            _lon = CityData.getCityLon(cityIdx).toFloat() / 10000.0;
+            _hasFix = true;
+        }
+    }
+
     function onTick() as Void {
+        applyLocation();
         WatchUi.requestUpdate();
+    }
+
+    function formatCoords(lat, lon) {
+        var ns = "N";
+        if (lat < 0.0) {
+            ns = "S";
+            lat = -lat;
+        }
+        var ew = "E";
+        if (lon < 0.0) {
+            ew = "W";
+            lon = -lon;
+        }
+        return lat.format("%.1f") + ns + " " + lon.format("%.1f") + ew;
     }
 
     function normalizeHeadingDeg(deg) {
@@ -58,38 +98,192 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         return d;
     }
 
+    //! Night-sky backdrop: vertical twilight gradient, soft horizon, subtle stars.
+    function drawQiblaBackground(dc, width, height, cx, cy) {
+        // Rich vertical gradient: emerald night (top) → deep forest mid → warm black (bottom).
+        var bands = 24;
+        var bandH = (height / bands) + 2;
+        for (var i = 0; i < bands; i++) {
+            var f = (i * 1000) / (bands - 1);
+            var rr;
+            var gg;
+            var bb;
+            if (f < 400) {
+                var t = (f * 100) / 400;
+                rr = 14 + (t * 10) / 100;
+                gg = 38 + (t * 22) / 100;
+                bb = 28 + (t * 10) / 100;
+            } else if (f < 700) {
+                var t2 = ((f - 400) * 100) / 300;
+                rr = 24 + (t2 * 8) / 100;
+                gg = 60 - (t2 * 8) / 100;
+                bb = 38 - (t2 * 12) / 100;
+            } else {
+                var t3 = ((f - 700) * 100) / 300;
+                rr = 32 - (t3 * 24) / 100;
+                gg = 52 - (t3 * 40) / 100;
+                bb = 26 - (t3 * 16) / 100;
+            }
+            if (rr < 2) {
+                rr = 2;
+            }
+            if (gg < 3) {
+                gg = 3;
+            }
+            if (bb < 6) {
+                bb = 6;
+            }
+            var c = (rr << 16) | (gg << 8) | bb;
+            dc.setColor(c, c);
+            dc.fillRectangle(0, i * bandH, width, bandH + 2);
+        }
+
+        // Soft vignette: slightly darken left/right edges (vertical strips).
+        var vignW = (width * 8) / 100;
+        if (vignW < 8) {
+            vignW = 8;
+        }
+        dc.setColor(0x040A08, 0x040A08);
+        dc.fillRectangle(0, 0, vignW, height);
+        dc.fillRectangle(width - vignW, 0, vignW, height);
+
+        // Horizon glow — thin green-teal band (distant atmosphere).
+        var hzY = (height * 70) / 100;
+        dc.setColor(0x1A4838, 0x1A4838);
+        dc.fillRectangle(0, hzY, width, 3);
+        dc.setColor(0x2A6850, 0x2A6850);
+        dc.fillRectangle(0, hzY + 1, width, 2);
+        dc.setColor(0x0C1810, 0x0C1810);
+        dc.fillRectangle(0, hzY + 3, width, 5);
+
+        // Soft moonlit pool behind compass: many thin rings, green-night → deep edge (no harsh bands).
+        var screenR = width < height ? width / 2 : height / 2;
+        var glowR = (screenR * 98) / 100;
+        var gcy = cy + (screenR / 12);
+        var step = 4;
+        var gr = glowR;
+        while (gr > 6) {
+            var u = (gr * 256) / glowR;
+            var ar = 6 + (u * 22) / 256;
+            var ag = 18 + (u * 48) / 256;
+            var ab = 12 + (u * 32) / 256;
+            if (u > 180) {
+                var lift = (u - 180) / 76;
+                ag = ag + (lift * 12) / 100;
+                ab = ab + (lift * 6) / 100;
+            }
+            if (ar > 32) {
+                ar = 32;
+            }
+            if (ag > 72) {
+                ag = 72;
+            }
+            if (ab > 58) {
+                ab = 58;
+            }
+            var gcol = (ar << 16) | (ag << 8) | ab;
+            dc.setColor(gcol, gcol);
+            dc.fillCircle(cx, gcy, gr);
+            gr -= step;
+        }
+
+        // Stars — percent positions [x, y] (avoid nested array indexing issues).
+        var starX = [12, 88, 25, 72, 8, 92, 18, 80, 45, 55, 30, 70, 50, 65, 38, 15];
+        var starY = [8, 6, 18, 14, 35, 38, 52, 48, 58, 62, 72, 78, 10, 25, 28, 44];
+        var starBright = 0xC8E8D8;
+        var starDim = 0x5A9078;
+        for (var si = 0; si < starX.size(); si++) {
+            var px = (width * starX[si]) / 100;
+            var py = (height * starY[si]) / 100;
+            var sc = starDim;
+            if ((si % 3) == 0) {
+                sc = starBright;
+            }
+            dc.setColor(sc, sc);
+            dc.fillCircle(px, py, 1);
+            if ((si % 5) == 1) {
+                dc.fillCircle(px + 1, py, 1);
+                dc.fillCircle(px, py + 1, 1);
+            }
+        }
+    }
+
+    //! Layered green-night bowl inside the brass ring (smooth gradient, soft luminous core).
+    function drawCompassBowlFace(dc, cx, compassCy, ring80Inner, innerPad, hubR) {
+        var rOut = ring80Inner - 2;
+        var layers = 8;
+        for (var li = 0; li < layers; li++) {
+            var ri = rOut - (li * (rOut - hubR)) / (layers - 1);
+            if (ri < hubR) {
+                ri = hubR;
+            }
+            var col;
+            if (li == 0) {
+                col = 0x0E1A14;
+            } else if (li == 1) {
+                col = 0x122418;
+            } else if (li == 2) {
+                col = 0x172E20;
+            } else if (li == 3) {
+                col = 0x1D3828;
+            } else if (li == 4) {
+                col = 0x244830;
+            } else if (li == 5) {
+                col = 0x2C5838;
+            } else if (li == 6) {
+                col = 0x356840;
+            } else {
+                col = 0x3D7848;
+            }
+            dc.setColor(col, col);
+            dc.fillCircle(cx, compassCy, ri);
+        }
+        dc.setColor(0x4A9070, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(cx, compassCy, ring80Inner - innerPad + 2);
+        dc.setColor(0x2A6048, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(cx, compassCy, hubR + 4);
+    }
+
     function onUpdate(dc) {
         var width = dc.getWidth();
         var height = dc.getHeight();
         var cx = width / 2;
         var cy = height / 2;
+        var qiblaBearing = 0.0;
+        var locationLabel = "Acquiring GPS...";
+        var degLabel = "---\u00B0";
         var cityIdx = _service.getCityIndex();
-        var cityName = CityData.getCityName(cityIdx);
-        var qiblaBearing = CityData.calculateQibla(cityIdx).toFloat();
+        if (_hasFix) {
+            qiblaBearing = CityData.bearingFromLatLonDegrees(_lat, _lon).toFloat();
+            degLabel = qiblaBearing.toNumber() + "\u00B0";
+            if (CityData.isAutoDetect(cityIdx)) {
+                locationLabel = formatCoords(_lat, _lon);
+            } else {
+                locationLabel = CityData.getCityName(cityIdx);
+            }
+        } else if (!CityData.isAutoDetect(cityIdx)) {
+            locationLabel = CityData.getCityName(cityIdx);
+        }
 
-        dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
-        dc.clear();
+        drawQiblaBackground(dc, width, height, cx, cy);
 
-        // Compass palette — brass housing, deep bowl face, maritime ticks
-        var cFaceOuter = 0x1A2430;
-        var cFaceMid = 0x232F3C;
-        var cFaceHub = 0x2D3C4C;
+        // Compass palette — brass housing, bowl via drawCompassBowlFace, maritime ticks
         var cBrassInner = 0x5A4C38;
         var cBrassOuter = Constants.COLOR_ACTIVE_MID;
-        var cRail = 0x121820;
-        var cVoid = 0x080D14;
+        var cRail = 0x121814;
+        var cVoid = 0x080D10;
         var cTickMaj = 0xC8BCAC;
         var cTickMin = 0x5E5852;
         var cNorth = 0x8E2A3C; // maroon — north cardinal
         var cCardIvory = 0xDCD8D0;
-        var cDegText = 0xA8B8C4;
+        var cDegText = 0xA8C8B4;
         var cCityText = 0xD4A84A;
-        var cNeedleSh = Constants.COLOR_PRIMARY_DARK;
-        var cNeedleBody = Constants.COLOR_PRIMARY;
-        var cNeedleEdge = Constants.COLOR_PRIMARY_LIGHT;
+        var cNeedleSh = 0x2A6B48;
+        var cNeedleBody = 0x5CB88A;
+        var cNeedleEdge = 0x9DD4B0;
         var cHubRim = 0x7A6848;
         var cHubCore = 0x2A2420;
-        var cKaabaWall = 0x141820;
+        var cKaabaWall = 0x141A16;
         var cKaabaBand = 0xC49A28;
 
         // Live heading in degrees (0 = north, clockwise). Used to rotate the rose + hand.
@@ -101,7 +295,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             headingFromSensor = true;
         }
 
-        if (headingFromSensor) {
+        if (headingFromSensor && _hasFix) {
             var alignErr = shortestHeadingErrorDeg(qiblaBearing, headingDeg);
             var aligned = alignErr <= 4.0;
             if (aligned && !_qiblaAlignLatched) {
@@ -175,23 +369,13 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             hubR = 26;
         }
 
-        // Inner compass face — deep “bowl” (inside inner brass ring)
-        dc.setColor(cFaceOuter, cFaceOuter);
-        dc.fillCircle(cx, compassCy, ring80Inner - 2);
-        dc.setColor(cFaceMid, cFaceMid);
-        dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
-        dc.setColor(cFaceHub, cFaceHub);
-        dc.fillCircle(cx, compassCy, hubR);
+        // Inner compass face — layered cyan-night bowl
+        drawCompassBowlFace(dc, cx, compassCy, ring80Inner, innerPad, hubR);
 
         // Inner brass ring
         dc.setColor(cBrassInner, cBrassInner);
         dc.fillCircle(cx, compassCy, ring80);
-        dc.setColor(cFaceOuter, cFaceOuter);
-        dc.fillCircle(cx, compassCy, ring80Inner - 2);
-        dc.setColor(cFaceMid, cFaceMid);
-        dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
-        dc.setColor(cFaceHub, cFaceHub);
-        dc.fillCircle(cx, compassCy, hubR);
+        drawCompassBowlFace(dc, cx, compassCy, ring80Inner, innerPad, hubR);
 
         // Outer brass ring, then restore interior
         dc.setColor(cBrassOuter, cBrassOuter);
@@ -200,12 +384,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.fillCircle(cx, compassCy, ring90Inner - 1);
         dc.setColor(cBrassInner, cBrassInner);
         dc.fillCircle(cx, compassCy, ring80);
-        dc.setColor(cFaceOuter, cFaceOuter);
-        dc.fillCircle(cx, compassCy, ring80Inner - 2);
-        dc.setColor(cFaceMid, cFaceMid);
-        dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
-        dc.setColor(cFaceHub, cFaceHub);
-        dc.fillCircle(cx, compassCy, hubR);
+        drawCompassBowlFace(dc, cx, compassCy, ring80Inner, innerPad, hubR);
 
         // Dark rails (brass bezel edges)
         dc.setColor(cRail, Graphics.COLOR_TRANSPARENT);
@@ -230,11 +409,8 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             dc.drawLine(ix, iy, ox, oy);
         }
 
-        // N/E/S/W centered on outer black circle (ring90Outer — yellow vs outer black)
-        var labelR = ring90Outer;
-        if (labelR > screenR - 4) {
-            labelR = screenR - 4;
-        }
+        // N/E/S/W centered in the outer (first) brass ring — between void and outer edge
+        var labelR = (ring90Outer + ring90Inner) / 2;
         var cardJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
         var cardFont = Graphics.FONT_SYSTEM_TINY;
         dc.setColor(cNorth, Graphics.COLOR_TRANSPARENT);
@@ -273,9 +449,20 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var degY = compassCy - (cityY - compassCy);
         var textJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
         dc.setColor(cDegText, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, degY, Graphics.FONT_XTINY, qiblaBearing.toNumber() + "\u00B0", textJust);
+        dc.drawText(cx, degY, Graphics.FONT_XTINY, degLabel, textJust);
         dc.setColor(cCityText, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, cityY, Graphics.FONT_XTINY, cityName, textJust);
+        dc.drawText(cx, cityY, Graphics.FONT_XTINY, locationLabel, textJust);
+
+        if (!_hasFix && CityData.isAutoDetect(cityIdx)) {
+            dc.setColor(Constants.COLOR_ERROR, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(cx, compassCy, Graphics.FONT_XTINY, "Open sky for GPS", textJust);
+            var backX = width - 35;
+            var backY = cy + 106;
+            dc.setColor(cBrassOuter, Graphics.COLOR_TRANSPARENT);
+            dc.drawLine(backX + 4, backY - 5, backX - 3, backY);
+            dc.drawLine(backX - 3, backY, backX + 4, backY + 5);
+            return;
+        }
 
         // Kaaba first so the Qibla hand draws on top when it aligns toward Mecca.
         var kw = (ring90Outer * 32) / 100;
@@ -396,7 +583,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var ggx = cx + (glintD * cosR).toNumber();
         var ggy = compassCy + (glintD * sinR).toNumber();
         var gOff = 0.4;
-        dc.setColor(Constants.COLOR_PRIMARY_LIGHT, Constants.COLOR_PRIMARY_LIGHT);
+        dc.setColor(cNeedleEdge, cNeedleEdge);
         dc.fillCircle(ggx + (gOff * px).toNumber(), ggy + (gOff * py).toNumber(), 2);
 
         dc.setColor(cNeedleEdge, cNeedleEdge);
@@ -412,7 +599,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.fillCircle(cx, compassCy, 6);
         dc.setColor(cHubCore, cHubCore);
         dc.fillCircle(cx, compassCy, 4);
-        dc.setColor(Constants.COLOR_PRIMARY, Constants.COLOR_PRIMARY);
+        dc.setColor(cNeedleBody, cNeedleBody);
         dc.fillCircle(cx, compassCy, 2);
         dc.setColor(cTickMaj, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, compassCy, 1);

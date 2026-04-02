@@ -51,12 +51,20 @@ class WaqtPrayerView extends WatchUi.View {
                 _initialLoad = false;
             }
         } else {
-            _errorMessage = "Failed to load";
+            var hint = _service.getLastFetchError();
+            if (hint != null) {
+                _errorMessage = hint;
+            } else {
+                _errorMessage = "Failed to load";
+            }
         }
         WatchUi.requestUpdate();
     }
 
     function onTimerTick() as Void {
+        if (CityData.isAutoDetect(_service.getCityIndex())) {
+            _service.sampleGpsFromPosition();
+        }
         if (_dataLoaded) {
             WatchUi.requestUpdate();
         }
@@ -105,15 +113,25 @@ class WaqtPrayerView extends WatchUi.View {
             return;
         }
 
-        // Header: city name (brass accent)
-        var cityName = CityData.getCityName(_service.getCityIndex());
-        var qibla = CityData.calculateQibla(_service.getCityIndex());
+        // Header: coordinates when auto-detect, else city name (brass accent)
+        var headerLoc = _service.getPrayerHeaderLocationLabel();
+        var idx = _service.getCityIndex();
+        var qiblaStr;
+        if (CityData.isAutoDetect(idx)) {
+            if (_service.hasGpsFix()) {
+                qiblaStr = CityData.bearingFromLatLonDegrees(_service.getAutoLat(), _service.getAutoLon()).toString();
+            } else {
+                qiblaStr = "--";
+            }
+        } else {
+            qiblaStr = CityData.calculateQibla(idx).toString();
+        }
 
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, 20, Graphics.FONT_XTINY, cityName, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(cx, 20, Graphics.FONT_XTINY, headerLoc, Graphics.TEXT_JUSTIFY_CENTER);
 
         dc.setColor(Constants.COLOR_PRIMARY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, 50, Graphics.FONT_XTINY, "Qibla " + qibla + "\u00B0", Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(cx, 50, Graphics.FONT_XTINY, "Qibla " + qiblaStr + "\u00B0", Graphics.TEXT_JUSTIFY_CENTER);
 
         // 3 prayer items
         var nextPrayerIdx = _service.getNextPrayerIndex();

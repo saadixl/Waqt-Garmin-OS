@@ -4,7 +4,7 @@
                     type="watch-app"
                     entry="WaqtApp"
                     launcherIcon="@Drawables.LauncherIcon"
-                    minSdkVersion="3.2.0"
+                    minSdkVersion="4.0.0"
                     name="@Strings.AppName"
                     version="1.4.0">
 
@@ -22,6 +22,7 @@
 
         <iq:permissions>
             <iq:uses-permission id="Communications" />
+            <iq:uses-permission id="Positioning" />
             <iq:uses-permission id="Sensor" />
         </iq:permissions>
 
