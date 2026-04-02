@@ -369,7 +369,7 @@ class WaqtQiblaView extends WatchUi.View {
             hubR = 26;
         }
 
-        // Inner compass face — layered cyan-night bowl
+        // Inner compass face — layered green-night bowl
         drawCompassBowlFace(dc, cx, compassCy, ring80Inner, innerPad, hubR);
 
         // Inner brass ring

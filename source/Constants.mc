@@ -1,7 +1,8 @@
 module Constants {
-    const COLOR_PRIMARY = 0x7EC8D4;      // Soft cyan — accents (qibla line, next prayer, needle)
-    const COLOR_PRIMARY_DARK = 0x3A6570; // Deep cyan-teal — needle shadow
-    const COLOR_PRIMARY_LIGHT = 0xADE4EE; // Light cyan — needle edge / highlight
+    // Match Qibla needle greens (WaqtQiblaView cNeedleBody / Sh / Edge)
+    const COLOR_PRIMARY = 0x5CB88A;
+    const COLOR_PRIMARY_DARK = 0x2A6B48;
+    const COLOR_PRIMARY_LIGHT = 0x9DD4B0;
     // Brass family (matches Qibla bezel)
     const COLOR_ACTIVE = 0x5A4C38;       // Dark brass — selection fills, arrows
     const COLOR_TEXT = 0xE8E4DC;         // Warm ivory — primary labels
