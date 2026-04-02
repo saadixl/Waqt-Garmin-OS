@@ -30,6 +30,16 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
+    function normalizeHeadingDeg(deg) {
+        while (deg < 0.0) {
+            deg += 360.0;
+        }
+        while (deg >= 360.0) {
+            deg -= 360.0;
+        }
+        return deg;
+    }
+
     function onUpdate(dc) {
         var width = dc.getWidth();
         var height = dc.getHeight();
@@ -42,37 +52,120 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
         dc.clear();
 
-        // Get live heading when available (radians from true north).
-        var headingDeg = null;
+        // Live heading in degrees (0 = north, clockwise). Used to rotate the rose + hand.
+        var headingDeg = 0.0;
         var info = Sensor.getInfo();
         if (info != null && info.heading != null) {
-            headingDeg = (info.heading.toFloat() * 180.0 / Math.PI);
-            while (headingDeg < 0.0) { headingDeg += 360.0; }
-            while (headingDeg >= 360.0) { headingDeg -= 360.0; }
+            headingDeg = normalizeHeadingDeg(info.heading.toFloat() * 180.0 / Math.PI);
         }
 
-        // Compass body
+        // Two thick metal rings: outer edge ~90% screenR; wide bands (not 2× diameter).
         var compassCy = cy;
-        var ringR = 180;
-        var innerR = 176;
-        // Soft layered background inside compass.
-        dc.setColor(0x070707, 0x070707);
-        dc.fillCircle(cx, compassCy, innerR - 2);
-        dc.setColor(0x0C0C0C, 0x0C0C0C);
-        dc.fillCircle(cx, compassCy, innerR - 20);
-        dc.setColor(0x121212, 0x121212);
-        dc.fillCircle(cx, compassCy, 24);
-        var ringColor = 0xCFCFCF;
-        dc.setColor(ringColor, Graphics.COLOR_TRANSPARENT);
-        // Wider ring thickness using concentric circles.
-        for (var rr = innerR; rr <= ringR; rr++) {
-            dc.drawCircle(cx, compassCy, rr);
+        var screenR = width < height ? width / 2 : height / 2;
+        var edgeInset = 3;
+        var ring90Outer = (screenR * 90) / 100;
+        if (ring90Outer > screenR - edgeInset) {
+            ring90Outer = screenR - edgeInset;
+        }
+        var bandOuter = (screenR * 14) / 100;
+        if (bandOuter < 10) {
+            bandOuter = 10;
+        }
+        if (bandOuter > 32) {
+            bandOuter = 32;
+        }
+        var ring90Inner = ring90Outer - bandOuter;
+        var ringMidGap = (screenR * 2) / 100;
+        if (ringMidGap < 2) {
+            ringMidGap = 2;
+        }
+        if (ringMidGap > 6) {
+            ringMidGap = 6;
+        }
+        var ring80 = ring90Inner - ringMidGap;
+        if (ring80 < 36) {
+            ring80 = 36;
+        }
+        var bandInner = (screenR * 12) / 100;
+        if (bandInner < 8) {
+            bandInner = 8;
+        }
+        if (bandInner > 26) {
+            bandInner = 26;
+        }
+        var ring80Inner = ring80 - bandInner;
+        if (ring80Inner < 20) {
+            ring80Inner = 20;
+            ring80 = ring80Inner + bandInner;
+            if (ring80 >= ring90Inner) {
+                ring90Inner = ring80 + ringMidGap;
+                ring90Outer = ring90Inner + bandOuter;
+                if (ring90Outer > screenR - edgeInset) {
+                    ring90Outer = screenR - edgeInset;
+                }
+            }
         }
 
-        // Tick marks around compass
+        var innerPad = (ring80Inner * 12) / 100;
+        if (innerPad < 10) {
+            innerPad = 10;
+        }
+        var hubR = (ring80Inner * 15) / 100;
+        if (hubR < 14) {
+            hubR = 14;
+        }
+        if (hubR > 26) {
+            hubR = 26;
+        }
+
+        // Two muted golden yellows (inner darker / cooler, outer slightly warmer)
+        var yellowRing = 0x726628;
+        var yellowRingEdge = 0x8C7630;
+
+        // Inner compass face (punched out after yellow bands; redraw helper blocks below)
+        // — warm yellowish parchment (inside inner metal ring)
+        dc.setColor(0x1A170E, 0x1A170E);
+        dc.fillCircle(cx, compassCy, ring80Inner - 2);
+        dc.setColor(0x282315, 0x282315);
+        dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
+        dc.setColor(0x342E1A, 0x342E1A);
+        dc.fillCircle(cx, compassCy, hubR);
+
+        // Inner ring band: yellow fill
+        dc.setColor(yellowRing, yellowRing);
+        dc.fillCircle(cx, compassCy, ring80);
+        dc.setColor(0x1A170E, 0x1A170E);
+        dc.fillCircle(cx, compassCy, ring80Inner - 2);
+        dc.setColor(0x282315, 0x282315);
+        dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
+        dc.setColor(0x342E1A, 0x342E1A);
+        dc.fillCircle(cx, compassCy, hubR);
+
+        // Outer ring band: yellow, then restore interior (inner band + face + mid gap)
+        dc.setColor(yellowRingEdge, yellowRingEdge);
+        dc.fillCircle(cx, compassCy, ring90Outer);
+        dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
+        dc.fillCircle(cx, compassCy, ring90Inner - 1);
+        dc.setColor(yellowRing, yellowRing);
+        dc.fillCircle(cx, compassCy, ring80);
+        dc.setColor(0x1A170E, 0x1A170E);
+        dc.fillCircle(cx, compassCy, ring80Inner - 2);
+        dc.setColor(0x282315, 0x282315);
+        dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
+        dc.setColor(0x342E1A, 0x342E1A);
+        dc.fillCircle(cx, compassCy, hubR);
+
+        // Black rail lines on ring inner/outer edges
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(cx, compassCy, ring80Inner);
+        dc.drawCircle(cx, compassCy, ring80);
+        dc.drawCircle(cx, compassCy, ring90Inner);
+        dc.drawCircle(cx, compassCy, ring90Outer);
+
+        // Tick marks — outer edge at 90% ring
         for (var d = 0; d < 360; d += 15) {
-            var a = (d - 90.0) * Math.PI / 180.0;
-            var outer = ringR;
+            var a = ((d - headingDeg) - 90.0) * Math.PI / 180.0;
+            var outer = ring90Outer;
             var tickLen = 4;
             if ((d % 45) == 0) {
                 tickLen = 8;
@@ -84,30 +177,86 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             dc.drawLine(ix, iy, ox, oy);
         }
 
-        // Cardinal directions
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, compassCy - ringR - 46, Graphics.FONT_TINY, "N", Graphics.TEXT_JUSTIFY_CENTER);
-        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx + ringR + 22, compassCy - 6, Graphics.FONT_XTINY, "E", Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(cx, compassCy + ringR + 4, Graphics.FONT_XTINY, "S", Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(cx - ringR - 22, compassCy - 6, Graphics.FONT_XTINY, "W", Graphics.TEXT_JUSTIFY_CENTER);
-
-        // Center labels inside compass.
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, compassCy - 84, Graphics.FONT_XTINY, cityName, Graphics.TEXT_JUSTIFY_CENTER);
-        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, compassCy + 54, Graphics.FONT_XTINY, qiblaBearing.toNumber() + "\u00B0", Graphics.TEXT_JUSTIFY_CENTER);
-
-        // Hand tracks watch heading over a fixed north-up ring.
-        var pointerDeg = 0.0;
-        if (headingDeg != null) {
-            pointerDeg = headingDeg;
+        // N/E/S/W centered on outer black circle (ring90Outer — yellow vs outer black)
+        var labelR = ring90Outer;
+        if (labelR > screenR - 4) {
+            labelR = screenR - 4;
         }
+        var cardJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        var aN = ((0.0 - headingDeg) - 90.0) * Math.PI / 180.0;
+        dc.drawText(
+            cx + (labelR * Math.cos(aN)).toNumber(),
+            compassCy + (labelR * Math.sin(aN)).toNumber(),
+            Graphics.FONT_TINY,
+            "N",
+            cardJust
+        );
+        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+        var aE = ((90.0 - headingDeg) - 90.0) * Math.PI / 180.0;
+        dc.drawText(
+            cx + (labelR * Math.cos(aE)).toNumber(),
+            compassCy + (labelR * Math.sin(aE)).toNumber(),
+            Graphics.FONT_XTINY,
+            "E",
+            cardJust
+        );
+        var aS = ((180.0 - headingDeg) - 90.0) * Math.PI / 180.0;
+        dc.drawText(
+            cx + (labelR * Math.cos(aS)).toNumber(),
+            compassCy + (labelR * Math.sin(aS)).toNumber(),
+            Graphics.FONT_XTINY,
+            "S",
+            cardJust
+        );
+        var aW = ((270.0 - headingDeg) - 90.0) * Math.PI / 180.0;
+        dc.drawText(
+            cx + (labelR * Math.cos(aW)).toNumber(),
+            compassCy + (labelR * Math.sin(aW)).toNumber(),
+            Graphics.FONT_XTINY,
+            "W",
+            cardJust
+        );
 
-        var rad = (pointerDeg - 90.0) * Math.PI / 180.0;
-        var tipR = ringR - 22;
-        var baseR = 28;
-        var halfW = 9.0;
+        // Bearing above, city below — each on midpoint from center to inner black border (ring80Inner)
+        var radialMid = ring80Inner / 2;
+        if (radialMid < hubR + 12) {
+            radialMid = hubR + 12;
+        }
+        if (radialMid > ring80Inner - 8) {
+            radialMid = ring80Inner - 8;
+        }
+        var labelDistFromCenter = radialMid;
+        var cityY = compassCy + labelDistFromCenter;
+        var degY = compassCy - (cityY - compassCy);
+        var textJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
+        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, degY, Graphics.FONT_XTINY, qiblaBearing.toNumber() + "\u00B0", textJust);
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, cityY, Graphics.FONT_XTINY, cityName, textJust);
+
+        // Orange hand toward Qibla on the rotating rose (same angle as a tick at qiblaBearing).
+        var deltaQ = normalizeHeadingDeg(qiblaBearing - headingDeg);
+        var rad = (deltaQ - 90.0) * Math.PI / 180.0;
+        var tipMargin = (ring90Outer * 12) / 100;
+        if (tipMargin < 14) {
+            tipMargin = 14;
+        }
+        var tipR = ring90Outer - tipMargin;
+        var baseR = (ring90Outer * 15) / 100;
+        if (baseR < 18) {
+            baseR = 18;
+        }
+        if (baseR > 32) {
+            baseR = 32;
+        }
+        var halfW = ring90Outer / 20.0;
+        if (halfW < 7.0) {
+            halfW = 7.0;
+        }
+        if (halfW > 11.0) {
+            halfW = 11.0;
+        }
         var tx = cx + (tipR * Math.cos(rad)).toNumber();
         var ty = compassCy + (tipR * Math.sin(rad)).toNumber();
         var bx = cx + (baseR * Math.cos(rad)).toNumber();
@@ -143,17 +292,36 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, compassCy, 2);
 
-        // Kaaba icon fixed at absolute Qibla bearing on the ring.
-        var kaabaR = ringR - 10;
-        var kaabaRad = (qiblaBearing - 90.0) * Math.PI / 180.0;
-        var kx = cx + (kaabaR * Math.cos(kaabaRad)).toNumber();
-        var ky = compassCy + (kaabaR * Math.sin(kaabaRad)).toNumber();
-        var kw = 24;
-        var kh = 24;
+        // Kaaba: gap from top of Kaaba to top of screen (cy - screenR) = 10% of screen radius
+        var kw = (ring90Outer * 32) / 100;
+        if (kw < 34) {
+            kw = 34;
+        }
+        if (kw > 58) {
+            kw = 58;
+        }
+        var kh = (kw * 28) / 24;
+        // 25% smaller than previous sizing
+        kw = (kw * 75) / 100;
+        kh = (kh * 75) / 100;
+        if (kw < 1) {
+            kw = 1;
+        }
+        if (kh < 1) {
+            kh = 1;
+        }
+        var kx = cx;
+        var gapAboveKaaba = (screenR * 10) / 100;
+        var ky = compassCy - screenR + gapAboveKaaba + (kh / 2);
         dc.setColor(0x1E1E1E, 0x1E1E1E);
         dc.fillRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
         dc.setColor(0xD7AF2A, 0xD7AF2A);
-        dc.fillRectangle(kx - (kw / 2), ky - (kh / 2) + 4, kw, 3);
+        var goldY = ky - (kh / 2) + (kh / 5);
+        var goldH = (kh / 4);
+        if (goldH < 4) {
+            goldH = 4;
+        }
+        dc.fillRectangle(kx - (kw / 2), goldY, kw, goldH);
         dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
         dc.drawRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
 

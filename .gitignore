@@ -9,3 +9,4 @@ build/
 *.der
 .vscode/
 .DS_Store
+/scripts
