@@ -1,16 +1,17 @@
 module Constants {
-    // Colors matching the Zepp OS version
-    const COLOR_PRIMARY = 0x4DD0E1;      // Light blue/cyan - headers, time remaining
-    const COLOR_ACTIVE = 0xD44C02;       // Dark orange - highlighted items
-    const COLOR_TEXT = 0xFFFFFF;          // White - default text
-    const COLOR_GRAY = 0x888888;          // Gray - secondary text
-    const COLOR_BG_ITEM = 0x2A2A2A;      // Dark gray - list item background
-    const COLOR_BG_ITEM_ALT = 0x353535;  // Slightly lighter gray
-    const COLOR_BG = 0x000000;           // Black background
-    const COLOR_ERROR = 0xFF5733;        // Red - error text
-    const COLOR_ACTIVE_BORDER = 0xFF6B1A;  // Lighter orange - border accent
-    const COLOR_ACTIVE_DARK = 0x8A3000;    // Dark orange - gradient dark end
-    const COLOR_ACTIVE_MID = 0xA63C01;     // Mid orange - gradient middle
+    const COLOR_PRIMARY = 0x7EC8D4;      // Soft cyan — accents (qibla line, next prayer)
+    // Brass family (matches Qibla bezel)
+    const COLOR_ACTIVE = 0x5A4C38;       // Dark brass — selection fills, arrows
+    const COLOR_TEXT = 0xE8E4DC;         // Warm ivory — primary labels
+    const COLOR_GRAY = 0x8E9CA8;         // Cool slate — secondary / inactive rows
+    const COLOR_BG_ITEM = 0x2A2A2A;     // Dark gray - list item background
+    const COLOR_BG_ITEM_ALT = 0x353535; // Slightly lighter gray
+    const COLOR_BG = 0x000000;          // Black background
+    const COLOR_ERROR = 0xFF5733;       // Red - error text
+    const COLOR_ACTIVE_BORDER = 0xC9B896; // Light brass — borders, cues, gradient top
+    const COLOR_ACTIVE_DARK = 0x3D3428;   // Deep brass shadow
+    const COLOR_ACTIVE_MID = 0x726045;    // Outer brass ring tone
+    const COLOR_SELECTION_OUTLINE = 0x726045; // Bezel frame — ListSelectionChrome
 
     // App metadata
     const APP_VERSION = "1.2.1";

@@ -36,8 +36,7 @@ class WaqtCityView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
         dc.clear();
 
-        // Header
-        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 24, Graphics.FONT_XTINY, "Select City", Graphics.TEXT_JUSTIFY_CENTER);
 
         var currentCityIdx = _service.getCityIndex();
@@ -70,7 +69,7 @@ class WaqtCityView extends WatchUi.View {
             // Content vertical offset to center within item
             var contentOffset = (currentHeight - 90) / 2;
 
-            // Background - orange bar with angled left edge
+            // Background - brass bar with angled left edge
             if (isCentered) {
                 var topDy = itemY - cy;
                 var botDy = itemY + currentHeight - cy;
@@ -90,7 +89,7 @@ class WaqtCityView extends WatchUi.View {
                 var bgWidth = bgRight - bgLeft;
                 var slant = 20;
 
-                // Main orange fill with angled left edge
+                // Main brass fill with angled left edge
                 dc.setColor(Constants.COLOR_ACTIVE, Constants.COLOR_ACTIVE);
                 dc.fillPolygon([
                     [bgLeft + slant, itemY],
@@ -116,7 +115,7 @@ class WaqtCityView extends WatchUi.View {
             if (isCentered) {
                 nameColor = Constants.COLOR_BG;
             } else if (isCurrentCity) {
-                nameColor = Constants.COLOR_ACTIVE;
+                nameColor = Constants.COLOR_PRIMARY;
             }
 
             dc.setColor(nameColor, Graphics.COLOR_TRANSPARENT);
@@ -130,7 +129,7 @@ class WaqtCityView extends WatchUi.View {
             var qibla = CityData.calculateQibla(cityIdx);
             var qiblaColor = Constants.COLOR_GRAY;
             if (isCentered) {
-                qiblaColor = Constants.COLOR_BG;
+                qiblaColor = Constants.COLOR_ACTIVE_BORDER;
             }
             dc.setColor(qiblaColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textRight, itemY + contentOffset + 4, Graphics.FONT_XTINY, qibla + "\u00B0", Graphics.TEXT_JUSTIFY_RIGHT);
@@ -141,7 +140,7 @@ class WaqtCityView extends WatchUi.View {
             // Country name below city - with clear gap
             var countryColor = Constants.COLOR_GRAY;
             if (isCentered) {
-                countryColor = Constants.COLOR_TEXT;
+                countryColor = Constants.COLOR_PRIMARY;
             }
             dc.setColor(countryColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, CityData.getCityCountry(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
@@ -161,7 +160,7 @@ class WaqtCityView extends WatchUi.View {
         dc.drawLine(backX + 4, backY - 5, backX - 3, backY);
         dc.drawLine(backX - 3, backY, backX + 4, backY + 5);
 
-        // Up/Down cues at bottom-center, close together, in orange.
+        // Up/Down cues at bottom-center, close together, brass.
         var arrowX = cx;
         var upY = height - 32;
         var downY = height - 20;

@@ -62,13 +62,13 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var cVoid = 0x080D14;
         var cTickMaj = 0xC8BCAC;
         var cTickMin = 0x5E5852;
-        var cNorth = 0xD4553A;
+        var cNorth = 0x8E2A3C; // maroon — north cardinal
         var cCardIvory = 0xDCD8D0;
         var cDegText = 0xA8B8C4;
         var cCityText = 0xD4A84A;
-        var cNeedleSh = 0x281810;
-        var cNeedleBody = 0xB84828;
-        var cNeedleEdge = 0xE08048;
+        var cNeedleSh = 0x0A2414;
+        var cNeedleBody = 0x228B3A;
+        var cNeedleEdge = 0x5CD685;
         var cHubRim = 0x7A6848;
         var cHubCore = 0x2A2420;
         var cKaabaWall = 0x141820;
@@ -201,40 +201,29 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             labelR = screenR - 4;
         }
         var cardJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
+        var cardFont = Graphics.FONT_SYSTEM_TINY;
         dc.setColor(cNorth, Graphics.COLOR_TRANSPARENT);
         var aN = ((0.0 - headingDeg) - 90.0) * Math.PI / 180.0;
-        dc.drawText(
-            cx + (labelR * Math.cos(aN)).toNumber(),
-            compassCy + (labelR * Math.sin(aN)).toNumber(),
-            Graphics.FONT_TINY,
-            "N",
-            cardJust
-        );
+        var nX = cx + (labelR * Math.cos(aN)).toNumber();
+        var nY = compassCy + (labelR * Math.sin(aN)).toNumber();
+        dc.drawText(nX, nY, cardFont, "N", cardJust);
+        dc.drawText(nX + 1, nY, cardFont, "N", cardJust);
         dc.setColor(cCardIvory, Graphics.COLOR_TRANSPARENT);
         var aE = ((90.0 - headingDeg) - 90.0) * Math.PI / 180.0;
-        dc.drawText(
-            cx + (labelR * Math.cos(aE)).toNumber(),
-            compassCy + (labelR * Math.sin(aE)).toNumber(),
-            Graphics.FONT_XTINY,
-            "E",
-            cardJust
-        );
+        var eX = cx + (labelR * Math.cos(aE)).toNumber();
+        var eY = compassCy + (labelR * Math.sin(aE)).toNumber();
+        dc.drawText(eX, eY, cardFont, "E", cardJust);
+        dc.drawText(eX + 1, eY, cardFont, "E", cardJust);
         var aS = ((180.0 - headingDeg) - 90.0) * Math.PI / 180.0;
-        dc.drawText(
-            cx + (labelR * Math.cos(aS)).toNumber(),
-            compassCy + (labelR * Math.sin(aS)).toNumber(),
-            Graphics.FONT_XTINY,
-            "S",
-            cardJust
-        );
+        var sX = cx + (labelR * Math.cos(aS)).toNumber();
+        var sY = compassCy + (labelR * Math.sin(aS)).toNumber();
+        dc.drawText(sX, sY, cardFont, "S", cardJust);
+        dc.drawText(sX + 1, sY, cardFont, "S", cardJust);
         var aW = ((270.0 - headingDeg) - 90.0) * Math.PI / 180.0;
-        dc.drawText(
-            cx + (labelR * Math.cos(aW)).toNumber(),
-            compassCy + (labelR * Math.sin(aW)).toNumber(),
-            Graphics.FONT_XTINY,
-            "W",
-            cardJust
-        );
+        var wX = cx + (labelR * Math.cos(aW)).toNumber();
+        var wY = compassCy + (labelR * Math.sin(aW)).toNumber();
+        dc.drawText(wX, wY, cardFont, "W", cardJust);
+        dc.drawText(wX + 1, wY, cardFont, "W", cardJust);
 
         // Bearing above, city below — each on midpoint from center to inner black border (ring80Inner)
         var radialMid = ring80Inner / 2;
@@ -253,7 +242,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.setColor(cCityText, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, cityY, Graphics.FONT_XTINY, cityName, textJust);
 
-        // Orange hand toward Qibla on the rotating rose (same angle as a tick at qiblaBearing).
+        // Green hand toward Qibla on the rotating rose (same angle as a tick at qiblaBearing).
         var deltaQ = normalizeHeadingDeg(qiblaBearing - headingDeg);
         var rad = (deltaQ - 90.0) * Math.PI / 180.0;
         var tipMargin = (ring90Outer * 12) / 100;

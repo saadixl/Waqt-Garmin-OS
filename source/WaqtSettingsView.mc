@@ -40,7 +40,7 @@ class WaqtSettingsView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
         dc.clear();
 
-        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 34, Graphics.FONT_TINY, "Settings", Graphics.TEXT_JUSTIFY_CENTER);
 
         // Draw 3 visible rows and keep selected item pinned to middle row.
@@ -62,7 +62,7 @@ class WaqtSettingsView extends WatchUi.View {
             }
 
             if (isCentered) {
-                // Match prayer/city selection style: angled orange bar with border.
+                // Match prayer/city selection style: angled brass bar with border.
                 var selY = y;
                 var selH = rowH;
 
@@ -102,7 +102,7 @@ class WaqtSettingsView extends WatchUi.View {
 
                 dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
             } else {
-                dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+                dc.setColor(Constants.COLOR_GRAY, Graphics.COLOR_TRANSPARENT);
             }
 
             var textY = y + ((rowH - 60) / 2) + 16;

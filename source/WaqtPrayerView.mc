@@ -90,7 +90,7 @@ class WaqtPrayerView extends WatchUi.View {
         dc.clear();
 
         if (_isLoading && !_dataLoaded) {
-            dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(Constants.COLOR_GRAY, Graphics.COLOR_TRANSPARENT);
             dc.drawText(cx, cy - 10, Graphics.FONT_XTINY, "Loading...", Graphics.TEXT_JUSTIFY_CENTER);
             return;
         }
@@ -105,15 +105,14 @@ class WaqtPrayerView extends WatchUi.View {
             return;
         }
 
-        // Header: City name (cyan) centered
+        // Header: city name (brass accent)
         var cityName = CityData.getCityName(_service.getCityIndex());
         var qibla = CityData.calculateQibla(_service.getCityIndex());
 
-        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 20, Graphics.FONT_XTINY, cityName, Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Qibla in secondary color for clearer visual hierarchy.
-        dc.setColor(Constants.COLOR_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Constants.COLOR_PRIMARY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 50, Graphics.FONT_XTINY, "Qibla " + qibla + "\u00B0", Graphics.TEXT_JUSTIFY_CENTER);
 
         // 3 prayer items
@@ -150,7 +149,7 @@ class WaqtPrayerView extends WatchUi.View {
             // Content vertical offset to center within item
             var contentOffset = (currentHeight - 90) / 2;
 
-            // Highlighted item: orange bar with angled left edge
+            // Highlighted item: brass bar with angled left edge
             if (isCentered) {
                 var topDy = itemY - cy;
                 var botDy = itemY + currentHeight - cy;
@@ -170,7 +169,7 @@ class WaqtPrayerView extends WatchUi.View {
                 var bgWidth = bgRight - bgLeft;
                 var slant = 20;
 
-                // Main orange fill with angled left edge
+                // Main brass fill with angled left edge
                 dc.setColor(Constants.COLOR_ACTIVE, Constants.COLOR_ACTIVE);
                 dc.fillPolygon([
                     [bgLeft + slant, itemY],
@@ -196,7 +195,7 @@ class WaqtPrayerView extends WatchUi.View {
             if (isCentered) {
                 nameColor = Constants.COLOR_BG;
             } else if (isNextPrayer) {
-                nameColor = Constants.COLOR_ACTIVE;
+                nameColor = Constants.COLOR_PRIMARY;
             } else {
                 nameColor = Constants.COLOR_TEXT;
             }
@@ -235,7 +234,9 @@ class WaqtPrayerView extends WatchUi.View {
 
             var remainColor;
             if (isCentered) {
-                remainColor = Constants.COLOR_TEXT;
+                remainColor = Constants.COLOR_ACTIVE_BORDER;
+            } else if (isNextPrayer) {
+                remainColor = Constants.COLOR_PRIMARY;
             } else {
                 remainColor = Constants.COLOR_GRAY;
             }
@@ -263,7 +264,7 @@ class WaqtPrayerView extends WatchUi.View {
         dc.fillCircle(gearX - 5, gearY + 5, 1);
         dc.fillCircle(gearX + 5, gearY + 5, 1);
 
-        // Up/Down cues at bottom-center, close together, in orange.
+        // Up/Down cues at bottom-center, close together, brass.
         var arrowX = cx;
         var upY = height - 32;
         var downY = height - 20;

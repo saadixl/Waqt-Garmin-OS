@@ -26,7 +26,7 @@ class WaqtAboutView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
         dc.clear();
 
-        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 34, Graphics.FONT_TINY, "About", Graphics.TEXT_JUSTIFY_CENTER);
 
         dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
