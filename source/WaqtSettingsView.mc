@@ -83,24 +83,19 @@ class WaqtSettingsView extends WatchUi.View {
                 var bgRight = cx + halfW - 5;
                 var slant = 20;
 
-                dc.setColor(Constants.COLOR_ACTIVE, Constants.COLOR_ACTIVE);
-                dc.fillPolygon([
-                    [bgLeft + slant, selY],
-                    [bgRight, selY],
-                    [bgRight, selY + selH],
-                    [bgLeft, selY + selH]
-                ]);
+                ListSelectionChrome.fillSlantedSelectionBar(
+                    dc,
+                    bgLeft,
+                    bgRight,
+                    slant,
+                    selY,
+                    selH
+                );
 
                 var bw = 5;
-                dc.setColor(Constants.COLOR_ACTIVE_BORDER, Constants.COLOR_ACTIVE_BORDER);
-                dc.fillPolygon([
-                    [bgLeft + slant, selY],
-                    [bgLeft + slant + bw, selY],
-                    [bgLeft + bw, selY + selH],
-                    [bgLeft, selY + selH]
-                ]);
+                ListSelectionChrome.fillSlantedLeftAccent(dc, bgLeft, selY, selH, slant, bw);
 
-                dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
+                dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
             } else {
                 dc.setColor(Constants.COLOR_GRAY, Graphics.COLOR_TRANSPARENT);
             }

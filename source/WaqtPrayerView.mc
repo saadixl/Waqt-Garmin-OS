@@ -169,35 +169,36 @@ class WaqtPrayerView extends WatchUi.View {
                 var bgWidth = bgRight - bgLeft;
                 var slant = 20;
 
-                // Main brass fill with angled left edge
-                dc.setColor(Constants.COLOR_ACTIVE, Constants.COLOR_ACTIVE);
-                dc.fillPolygon([
-                    [bgLeft + slant, itemY],
-                    [bgRight, itemY],
-                    [bgRight, itemY + currentHeight],
-                    [bgLeft, itemY + currentHeight]
-                ]);
+                ListSelectionChrome.fillSlantedSelectionBar(
+                    dc,
+                    bgLeft,
+                    bgRight,
+                    slant,
+                    itemY,
+                    currentHeight
+                );
 
-
-                // Diagonal border along angled edge (as polygon to stay within bounds)
                 var bw = 5;
-                dc.setColor(Constants.COLOR_ACTIVE_BORDER, Constants.COLOR_ACTIVE_BORDER);
-                dc.fillPolygon([
-                    [bgLeft + slant, itemY],
-                    [bgLeft + slant + bw, itemY],
-                    [bgLeft + bw, itemY + currentHeight],
-                    [bgLeft, itemY + currentHeight]
-                ]);
+                ListSelectionChrome.fillSlantedLeftAccent(dc, bgLeft, itemY, currentHeight, slant, bw);
             }
 
             // Color for prayer name + time
             var nameColor;
             if (isCentered) {
-                nameColor = Constants.COLOR_BG;
+                nameColor = Graphics.COLOR_WHITE;
             } else if (isNextPrayer) {
                 nameColor = Constants.COLOR_PRIMARY;
             } else {
                 nameColor = Constants.COLOR_TEXT;
+            }
+
+            var timeColor;
+            if (isCentered) {
+                timeColor = Graphics.COLOR_WHITE;
+            } else if (isNextPrayer) {
+                timeColor = Constants.COLOR_PRIMARY;
+            } else {
+                timeColor = Constants.COLOR_GRAY;
             }
 
             // Row 1: Prayer name (left) + Time (right)
@@ -217,7 +218,7 @@ class WaqtPrayerView extends WatchUi.View {
             }
 
             var timeStr = _service.getFormattedTime(prayerIdx);
-            dc.setColor(nameColor, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(timeColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textRight, itemY + contentOffset, rowFont, timeStr, Graphics.TEXT_JUSTIFY_RIGHT);
             if (isCentered) {
                 dc.drawText(textRight + 1, itemY + contentOffset, rowFont, timeStr, Graphics.TEXT_JUSTIFY_RIGHT);
@@ -234,7 +235,7 @@ class WaqtPrayerView extends WatchUi.View {
 
             var remainColor;
             if (isCentered) {
-                remainColor = Constants.COLOR_ACTIVE_BORDER;
+                remainColor = Graphics.COLOR_WHITE;
             } else if (isNextPrayer) {
                 remainColor = Constants.COLOR_PRIMARY;
             } else {

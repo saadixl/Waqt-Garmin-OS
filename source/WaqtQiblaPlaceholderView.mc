@@ -57,7 +57,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var cFaceMid = 0x232F3C;
         var cFaceHub = 0x2D3C4C;
         var cBrassInner = 0x5A4C38;
-        var cBrassOuter = 0x726045;
+        var cBrassOuter = Constants.COLOR_ACTIVE_MID;
         var cRail = 0x121820;
         var cVoid = 0x080D14;
         var cTickMaj = 0xC8BCAC;

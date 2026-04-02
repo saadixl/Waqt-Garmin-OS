@@ -89,31 +89,23 @@ class WaqtCityView extends WatchUi.View {
                 var bgWidth = bgRight - bgLeft;
                 var slant = 20;
 
-                // Main brass fill with angled left edge
-                dc.setColor(Constants.COLOR_ACTIVE, Constants.COLOR_ACTIVE);
-                dc.fillPolygon([
-                    [bgLeft + slant, itemY],
-                    [bgRight, itemY],
-                    [bgRight, itemY + currentHeight],
-                    [bgLeft, itemY + currentHeight]
-                ]);
+                ListSelectionChrome.fillSlantedSelectionBar(
+                    dc,
+                    bgLeft,
+                    bgRight,
+                    slant,
+                    itemY,
+                    currentHeight
+                );
 
-
-                // Diagonal border along angled edge (as polygon to stay within bounds)
                 var bw = 5;
-                dc.setColor(Constants.COLOR_ACTIVE_BORDER, Constants.COLOR_ACTIVE_BORDER);
-                dc.fillPolygon([
-                    [bgLeft + slant, itemY],
-                    [bgLeft + slant + bw, itemY],
-                    [bgLeft + bw, itemY + currentHeight],
-                    [bgLeft, itemY + currentHeight]
-                ]);
+                ListSelectionChrome.fillSlantedLeftAccent(dc, bgLeft, itemY, currentHeight, slant, bw);
             }
 
             // City name (left) - large font
             var nameColor = Constants.COLOR_TEXT;
             if (isCentered) {
-                nameColor = Constants.COLOR_BG;
+                nameColor = Graphics.COLOR_WHITE;
             } else if (isCurrentCity) {
                 nameColor = Constants.COLOR_PRIMARY;
             }
@@ -129,7 +121,7 @@ class WaqtCityView extends WatchUi.View {
             var qibla = CityData.calculateQibla(cityIdx);
             var qiblaColor = Constants.COLOR_GRAY;
             if (isCentered) {
-                qiblaColor = Constants.COLOR_ACTIVE_BORDER;
+                qiblaColor = Graphics.COLOR_WHITE;
             }
             dc.setColor(qiblaColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textRight, itemY + contentOffset + 4, Graphics.FONT_XTINY, qibla + "\u00B0", Graphics.TEXT_JUSTIFY_RIGHT);
@@ -140,7 +132,7 @@ class WaqtCityView extends WatchUi.View {
             // Country name below city - with clear gap
             var countryColor = Constants.COLOR_GRAY;
             if (isCentered) {
-                countryColor = Constants.COLOR_PRIMARY;
+                countryColor = Graphics.COLOR_WHITE;
             }
             dc.setColor(countryColor, Graphics.COLOR_TRANSPARENT);
             dc.drawText(textLeft, itemY + contentOffset + 48, Graphics.FONT_XTINY, CityData.getCityCountry(cityIdx), Graphics.TEXT_JUSTIFY_LEFT);
