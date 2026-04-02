@@ -52,6 +52,28 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
         dc.clear();
 
+        // Compass palette — brass housing, deep bowl face, maritime ticks
+        var cFaceOuter = 0x1A2430;
+        var cFaceMid = 0x232F3C;
+        var cFaceHub = 0x2D3C4C;
+        var cBrassInner = 0x5A4C38;
+        var cBrassOuter = 0x726045;
+        var cRail = 0x121820;
+        var cVoid = 0x080D14;
+        var cTickMaj = 0xC8BCAC;
+        var cTickMin = 0x5E5852;
+        var cNorth = 0xD4553A;
+        var cCardIvory = 0xDCD8D0;
+        var cDegText = 0xA8B8C4;
+        var cCityText = 0xD4A84A;
+        var cNeedleSh = 0x281810;
+        var cNeedleBody = 0xB84828;
+        var cNeedleEdge = 0xE08048;
+        var cHubRim = 0x7A6848;
+        var cHubCore = 0x2A2420;
+        var cKaabaWall = 0x141820;
+        var cKaabaBand = 0xC49A28;
+
         // Live heading in degrees (0 = north, clockwise). Used to rotate the rose + hand.
         var headingDeg = 0.0;
         var info = Sensor.getInfo();
@@ -118,45 +140,40 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             hubR = 26;
         }
 
-        // Two muted golden yellows (inner darker / cooler, outer slightly warmer)
-        var yellowRing = 0x726628;
-        var yellowRingEdge = 0x8C7630;
-
-        // Inner compass face (punched out after yellow bands; redraw helper blocks below)
-        // — warm yellowish parchment (inside inner metal ring)
-        dc.setColor(0x1A170E, 0x1A170E);
+        // Inner compass face — deep “bowl” (inside inner brass ring)
+        dc.setColor(cFaceOuter, cFaceOuter);
         dc.fillCircle(cx, compassCy, ring80Inner - 2);
-        dc.setColor(0x282315, 0x282315);
+        dc.setColor(cFaceMid, cFaceMid);
         dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
-        dc.setColor(0x342E1A, 0x342E1A);
+        dc.setColor(cFaceHub, cFaceHub);
         dc.fillCircle(cx, compassCy, hubR);
 
-        // Inner ring band: yellow fill
-        dc.setColor(yellowRing, yellowRing);
+        // Inner brass ring
+        dc.setColor(cBrassInner, cBrassInner);
         dc.fillCircle(cx, compassCy, ring80);
-        dc.setColor(0x1A170E, 0x1A170E);
+        dc.setColor(cFaceOuter, cFaceOuter);
         dc.fillCircle(cx, compassCy, ring80Inner - 2);
-        dc.setColor(0x282315, 0x282315);
+        dc.setColor(cFaceMid, cFaceMid);
         dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
-        dc.setColor(0x342E1A, 0x342E1A);
+        dc.setColor(cFaceHub, cFaceHub);
         dc.fillCircle(cx, compassCy, hubR);
 
-        // Outer ring band: yellow, then restore interior (inner band + face + mid gap)
-        dc.setColor(yellowRingEdge, yellowRingEdge);
+        // Outer brass ring, then restore interior
+        dc.setColor(cBrassOuter, cBrassOuter);
         dc.fillCircle(cx, compassCy, ring90Outer);
-        dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
+        dc.setColor(cVoid, cVoid);
         dc.fillCircle(cx, compassCy, ring90Inner - 1);
-        dc.setColor(yellowRing, yellowRing);
+        dc.setColor(cBrassInner, cBrassInner);
         dc.fillCircle(cx, compassCy, ring80);
-        dc.setColor(0x1A170E, 0x1A170E);
+        dc.setColor(cFaceOuter, cFaceOuter);
         dc.fillCircle(cx, compassCy, ring80Inner - 2);
-        dc.setColor(0x282315, 0x282315);
+        dc.setColor(cFaceMid, cFaceMid);
         dc.fillCircle(cx, compassCy, ring80Inner - innerPad);
-        dc.setColor(0x342E1A, 0x342E1A);
+        dc.setColor(cFaceHub, cFaceHub);
         dc.fillCircle(cx, compassCy, hubR);
 
-        // Black rail lines on ring inner/outer edges
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        // Dark rails (brass bezel edges)
+        dc.setColor(cRail, Graphics.COLOR_TRANSPARENT);
         dc.drawCircle(cx, compassCy, ring80Inner);
         dc.drawCircle(cx, compassCy, ring80);
         dc.drawCircle(cx, compassCy, ring90Inner);
@@ -170,6 +187,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             if ((d % 45) == 0) {
                 tickLen = 8;
             }
+            dc.setColor((d % 45) == 0 ? cTickMaj : cTickMin, Graphics.COLOR_TRANSPARENT);
             var ix = cx + ((outer - tickLen) * Math.cos(a)).toNumber();
             var iy = compassCy + ((outer - tickLen) * Math.sin(a)).toNumber();
             var ox = cx + (outer * Math.cos(a)).toNumber();
@@ -183,7 +201,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             labelR = screenR - 4;
         }
         var cardJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(cNorth, Graphics.COLOR_TRANSPARENT);
         var aN = ((0.0 - headingDeg) - 90.0) * Math.PI / 180.0;
         dc.drawText(
             cx + (labelR * Math.cos(aN)).toNumber(),
@@ -192,7 +210,7 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
             "N",
             cardJust
         );
-        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(cCardIvory, Graphics.COLOR_TRANSPARENT);
         var aE = ((90.0 - headingDeg) - 90.0) * Math.PI / 180.0;
         dc.drawText(
             cx + (labelR * Math.cos(aE)).toNumber(),
@@ -230,9 +248,9 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var cityY = compassCy + labelDistFromCenter;
         var degY = compassCy - (cityY - compassCy);
         var textJust = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
-        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(cDegText, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, degY, Graphics.FONT_XTINY, qiblaBearing.toNumber() + "\u00B0", textJust);
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(cCityText, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, cityY, Graphics.FONT_XTINY, cityName, textJust);
 
         // Orange hand toward Qibla on the rotating rose (same angle as a tick at qiblaBearing).
@@ -268,29 +286,36 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var rx = bx - (halfW * px).toNumber();
         var ry = by - (halfW * py).toNumber();
 
-        // Pointer border then fill for better contrast.
         var halfWOuter = halfW + 2.0;
         var lx2 = bx + (halfWOuter * px).toNumber();
         var ly2 = by + (halfWOuter * py).toNumber();
         var rx2 = bx - (halfWOuter * px).toNumber();
         var ry2 = by - (halfWOuter * py).toNumber();
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Constants.COLOR_ACTIVE_BORDER);
+        var sh = 2;
+        dc.setColor(cNeedleSh, cNeedleSh);
+        dc.fillPolygon([
+            [tx + sh, ty + sh],
+            [lx2 + sh, ly2 + sh],
+            [rx2 + sh, ry2 + sh]
+        ]);
+        dc.setColor(cNeedleEdge, cNeedleEdge);
         dc.fillPolygon([
             [tx, ty],
             [lx2, ly2],
             [rx2, ry2]
         ]);
-
-        dc.setColor(Constants.COLOR_ACTIVE, Constants.COLOR_ACTIVE);
+        dc.setColor(cNeedleBody, cNeedleBody);
         dc.fillPolygon([
             [tx, ty],
             [lx, ly],
             [rx, ry]
         ]);
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Constants.COLOR_ACTIVE_BORDER);
-        dc.fillCircle(cx, compassCy, 5);
-        dc.setColor(Constants.COLOR_BG, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(cx, compassCy, 2);
+        dc.setColor(cHubRim, cHubRim);
+        dc.fillCircle(cx, compassCy, 6);
+        dc.setColor(cHubCore, cHubCore);
+        dc.fillCircle(cx, compassCy, 4);
+        dc.setColor(cTickMaj, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(cx, compassCy, 1);
 
         // Kaaba: gap from top of Kaaba to top of screen (cy - screenR) = 10% of screen radius
         var kw = (ring90Outer * 32) / 100;
@@ -313,22 +338,22 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var kx = cx;
         var gapAboveKaaba = (screenR * 10) / 100;
         var ky = compassCy - screenR + gapAboveKaaba + (kh / 2);
-        dc.setColor(0x1E1E1E, 0x1E1E1E);
+        dc.setColor(cKaabaWall, cKaabaWall);
         dc.fillRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
-        dc.setColor(0xD7AF2A, 0xD7AF2A);
+        dc.setColor(cKaabaBand, cKaabaBand);
         var goldY = ky - (kh / 2) + (kh / 5);
         var goldH = (kh / 4);
         if (goldH < 4) {
             goldH = 4;
         }
         dc.fillRectangle(kx - (kw / 2), goldY, kw, goldH);
-        dc.setColor(Constants.COLOR_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(cCardIvory, Graphics.COLOR_TRANSPARENT);
         dc.drawRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
 
         // Back cue near physical BACK button (lower-right).
         var backX = width - 35;
         var backY = cy + 106;
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(cBrassOuter, Graphics.COLOR_TRANSPARENT);
         dc.drawLine(backX + 4, backY - 5, backX - 3, backY);
         dc.drawLine(backX - 3, backY, backX + 4, backY + 5);
     }
