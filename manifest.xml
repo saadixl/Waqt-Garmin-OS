@@ -6,7 +6,7 @@
                     launcherIcon="@Drawables.LauncherIcon"
                     minSdkVersion="4.0.0"
                     name="@Strings.AppName"
-                    version="1.4.0">
+                    version="1.5.0">
 
         <iq:products>
             <iq:product id="fr165" />
