@@ -1,6 +1,6 @@
 # Waqt - Garmin OS
 
-A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
+A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). The UI uses a **brass and cyan** theme aligned with the Qibla compass: warm brass bezels and accents, soft cyan for “next” cues and the live needle, and ivory/white typography on deep black.
 
 ![1](https://github.com/user-attachments/assets/f9bfbbb4-7cee-4332-aa63-32fe26d090bc)
 
@@ -8,41 +8,41 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C).
 ## Features
 
 ### Prayer times view
-- See the next prayer time, previous prayer time, and surrounding prayer times once the app is opened
-- See the selected city and qibla direction from the selected city on the header
-- Pressing Up / Down button navigates between prayer times
-- Live countdown timer to the next prayer, updating every second
-- Settings icon cue on the right side to open Settings
+- Center-focused list: the **selected** prayer sits in a **solid brass** bar (same tone as the Qibla outer ring) with a **light brass accent** on the slanted leading edge.
+- **Outer** rows use subtle, round-aware inset panels; the **next** prayer (when not in the center slot) gets a slightly lifted panel and a **cyan pip** beside the name.
+- **Header**: city title with light/deep brass emboss, **Qibla bearing** in cyan with a soft lift, and a **double hairline** separating the header from the list.
+- Countdown behaviour unchanged: full countdown for the next prayer (and for the centered row); shorter remaining-time hints on other rows. Colours are tuned so the center row reads crisply on brass, with teal-muted lines elsewhere.
+- **Up / Down** scrolls the list. **Select/Start** opens Settings.
+- **Chrome**: brass **scroll chevrons** (beveled shadow + highlight) and a **settings** cue (brass bezel ring, cyan center jewel) near the physical control cluster on supported models.
+- **Loading** shows brass primary copy with a subtle teal ellipsis; **errors** show a clear system-style message.
 
 <img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/b6880fd1-ac5c-48f5-ac3d-76afc71e3ba2" />
 
 
 ### Settings view
-- Press Select/Start on prayer view to open Settings
-- Rotating center-selected menu (same interaction style as other lists)
+- Press Select/Start on the prayer view to open Settings.
+- Rotating **center-selected** menu with the **same brass bar + slanted accent** treatment as the prayer and city lists.
 - Menu items:
   - Select location
   - Find Qibla
   - About
- 
+
 <img width="480" height="auto" alt="2" src="https://github.com/user-attachments/assets/32aa0cfe-5dab-43ad-9adb-d8bbccc6ec10" />
 
 
 ### Find Qibla view
-- Live compass page that points toward Qibla for the currently selected city
-- Uses device heading sensor when available
-- Kaaba marker shown on the compass ring at Qibla bearing
-- City name and Qibla degree are shown inside the compass
+- Live **compass** for the current city; **heading** comes from the device sensor when available.
+- **Kaaba** marker on the outer ring; city name and bearing inside the face.
+- **Qibla hand**: cyan **lancet-style** needle (tip toward Mecca, counterweight toward the hub), with depth **shadow**, **rim/body** layers, a small **glint**, **tip highlight**, and a **hub** stack (brass rim, dark core, cyan collar, bright pin).
 
 <img width="480" height="auto" alt="4" src="https://github.com/user-attachments/assets/b04900e5-c06f-4d07-9732-bc818b15a3bf" />
 
 
 ### City selection view
-- Accessible from Settings -> Select location
-- Currently 20 cities are supported and their qibla direction is also shown
-- Pressing Up / Down button navigates between cities
-- Pressing the Select button selects the city and fetches corresponding prayer times
-- Selected city is persisted across app launches
+- Open from **Settings → Select location**.
+- **20 cities** with qibla direction shown per row; **Up / Down** moves selection; **Select** confirms and refreshes prayer times for that city.
+- Selection uses the **same brass highlight** pattern as the prayer screen.
+- Selected city is persisted across app launches.
 
 <img width="480" height="auto" alt="3" src="https://github.com/user-attachments/assets/62228785-0153-4338-9f99-3ddeddf64164" />
 
@@ -61,16 +61,20 @@ Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Duba
 - Garmin Forerunner 970
 
 ## Building
-1. Install the [Connect IQ SDK](https://developer.garmin.com/connect-iq/sdk/) (4.0.6+) and Java 8+
-2. Install the [Monkey C VS Code Extension](https://marketplace.visualstudio.com/items?itemName=garmin.monkey-c)
+1. Install the [Connect IQ SDK](https://developer.garmin.com/connect-iq/sdk/) and Java 8+ (use a SDK version compatible with your `manifest.xml` **minSdkVersion**).
+2. Install the [Monkey C VS Code Extension](https://marketplace.visualstudio.com/items?itemName=garmin.monkey-c).
 3. Generate a developer key: `openssl genrsa 4096 | openssl pkcs8 -topk8 -nocrypt -outform DER -out developer_key.der`
-4. Build from terminal:
+4. **Debug / simulator build** (`.prg`):
    - `monkeyc -f monkey.jungle -o bin/app.prg -y developer_key.der`
-5. Run in simulator:
-   - `"/Users/saadixl/Library/Application Support/Garmin/ConnectIQ/Sdks/connectiq-sdk-mac-9.1.0-2026-03-09-6a872a80b/bin/monkeydo" bin/app.prg fr970`
+5. **Release package** (signed `.iq` for store or sideload):
+   - `monkeyc -e -r -f monkey.jungle -o Waqt-Garmin-OS.iq -y developer_key.der`
+   - Optional optimisation: add `-O p` (performance) or `-O z` (code size); see `monkeyc --help`.
+6. Run in simulator (adjust path to your SDK and device id, e.g. `fr970`):
+   - `"/path/to/connectiq-sdk/.../bin/monkeydo" bin/app.prg fr970`
 
 ## Installing on Watch
-Copy your generated `.prg` (for example `bin/app.prg`) to the `GARMIN/APPS/` folder on your watch via USB, or side-load through the Connect IQ mobile app.
+- **Simulator / dev**: copy `bin/app.prg` to the watch `GARMIN/APPS/` folder over USB, or use the Connect IQ app.
+- **Release**: install or publish the generated `.iq` package.
 
 ## Note
 - https://api.aladhan.com/v1 API is used to fetch prayer times.
