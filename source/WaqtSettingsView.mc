@@ -40,6 +40,8 @@ class WaqtSettingsView extends WatchUi.View {
         dc.setColor(Constants.COLOR_BG, Constants.COLOR_BG);
         dc.clear();
 
+        var listLeft = 64;
+
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 34, Graphics.FONT_TINY, "Settings", Graphics.TEXT_JUSTIFY_CENTER);
 
@@ -100,15 +102,15 @@ class WaqtSettingsView extends WatchUi.View {
                 dc.setColor(Constants.COLOR_GRAY, Graphics.COLOR_TRANSPARENT);
             }
 
-            var textY = y + ((rowH - 60) / 2) + 16;
+            var rowMidY = y + rowH / 2;
             if (isCentered) {
-                // Slightly raise selected text to create a touch more bottom padding.
-                textY = textY - 7;
+                rowMidY = rowMidY - 7;
             }
-            dc.drawText(cx, textY, Graphics.FONT_TINY, _items[itemIdx], Graphics.TEXT_JUSTIFY_CENTER);
+            var rowFont = Graphics.FONT_TINY;
+            var vjust = Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER;
+            dc.drawText(listLeft, rowMidY, rowFont, _items[itemIdx], vjust);
             if (isCentered) {
-                // Overdraw selected settings text for stronger boldness.
-                dc.drawText(cx + 1, textY, Graphics.FONT_TINY, _items[itemIdx], Graphics.TEXT_JUSTIFY_CENTER);
+                dc.drawText(listLeft + 1, rowMidY, rowFont, _items[itemIdx], vjust);
             }
         }
 
