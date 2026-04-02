@@ -24,7 +24,8 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
   - Find Qibla
   - About
 
-<img width="480" height="auto" alt="2" src="https://github.com/user-attachments/assets/7a7634e2-8cb8-4a39-8802-d764425547e5" />
+<img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/267db731-37d1-4f6b-8f2b-6a4c8ad805ba" />
+
 
 ### Find Qibla view
 - Live **compass** for the current city; **heading** comes from the device sensor when available.
