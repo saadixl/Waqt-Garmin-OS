@@ -275,9 +275,11 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.setColor(cCardIvory, Graphics.COLOR_TRANSPARENT);
         dc.drawRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
 
-        // Cyan Qibla hand (matches app accent) toward Mecca on the rotating rose.
+        // Cyan Qibla hand — compass lancet: convex blade + tail, rim/body, tipped shadow, jewel + glint.
         var deltaQ = normalizeHeadingDeg(qiblaBearing - headingDeg);
         var rad = (deltaQ - 90.0) * Math.PI / 180.0;
+        var cosR = Math.cos(rad);
+        var sinR = Math.sin(rad);
         var tipMargin = (ring90Outer * 12) / 100;
         if (tipMargin < 14) {
             tipMargin = 14;
@@ -290,52 +292,93 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         if (baseR > 32) {
             baseR = 32;
         }
-        var halfW = ring90Outer / 20.0;
+        var halfW = ring90Outer / 18.0;
         if (halfW < 7.0) {
             halfW = 7.0;
         }
-        if (halfW > 11.0) {
-            halfW = 11.0;
+        if (halfW > 13.0) {
+            halfW = 13.0;
         }
-        var tx = cx + (tipR * Math.cos(rad)).toNumber();
-        var ty = compassCy + (tipR * Math.sin(rad)).toNumber();
-        var bx = cx + (baseR * Math.cos(rad)).toNumber();
-        var by = compassCy + (baseR * Math.sin(rad)).toNumber();
+        var halfWOuter = halfW + 2.0;
+
+        var tx = cx + (tipR * cosR).toNumber();
+        var ty = compassCy + (tipR * sinR).toNumber();
+        var bx = cx + (baseR * cosR).toNumber();
+        var by = compassCy + (baseR * sinR).toNumber();
         var px = Math.cos(rad + (Math.PI / 2.0));
         var py = Math.sin(rad + (Math.PI / 2.0));
         var lx = bx + (halfW * px).toNumber();
         var ly = by + (halfW * py).toNumber();
         var rx = bx - (halfW * px).toNumber();
         var ry = by - (halfW * py).toNumber();
-
-        var halfWOuter = halfW + 2.0;
         var lx2 = bx + (halfWOuter * px).toNumber();
         var ly2 = by + (halfWOuter * py).toNumber();
         var rx2 = bx - (halfWOuter * px).toNumber();
         var ry2 = by - (halfWOuter * py).toNumber();
-        var sh = 2;
+
+        var tailLen = 11 + (screenR / 30);
+        if (tailLen > 18) {
+            tailLen = 18;
+        }
+        if (tailLen < 9) {
+            tailLen = 9;
+        }
+        var tailTipR = baseR - tailLen;
+        var tailMinR = hubR + 5;
+        if (tailTipR < tailMinR) {
+            tailTipR = tailMinR;
+        }
+        var ttx = cx + (tailTipR * cosR).toNumber();
+        var tty = compassCy + (tailTipR * sinR).toNumber();
+
+        var shMag = 1.5;
+        var shx = (shMag * Math.cos(rad + Math.PI / 2.8)).toNumber();
+        var shy = (shMag * Math.sin(rad + Math.PI / 2.8)).toNumber();
+
         dc.setColor(cNeedleSh, cNeedleSh);
         dc.fillPolygon([
-            [tx + sh, ty + sh],
-            [lx2 + sh, ly2 + sh],
-            [rx2 + sh, ry2 + sh]
+            [tx + shx, ty + shy],
+            [lx2 + shx, ly2 + shy],
+            [ttx + shx, tty + shy],
+            [rx2 + shx, ry2 + shy]
         ]);
         dc.setColor(cNeedleEdge, cNeedleEdge);
         dc.fillPolygon([
             [tx, ty],
             [lx2, ly2],
+            [ttx, tty],
             [rx2, ry2]
         ]);
         dc.setColor(cNeedleBody, cNeedleBody);
         dc.fillPolygon([
             [tx, ty],
             [lx, ly],
+            [ttx, tty],
             [rx, ry]
         ]);
+
+        var glintD = (tipR * 64) / 100 + (baseR * 36) / 100;
+        var ggx = cx + (glintD * cosR).toNumber();
+        var ggy = compassCy + (glintD * sinR).toNumber();
+        var gOff = 0.4;
+        dc.setColor(Constants.COLOR_PRIMARY_LIGHT, Constants.COLOR_PRIMARY_LIGHT);
+        dc.fillCircle(ggx + (gOff * px).toNumber(), ggy + (gOff * py).toNumber(), 2);
+
+        dc.setColor(cNeedleEdge, cNeedleEdge);
+        dc.fillCircle(tx, ty, 3);
+        dc.setColor(cNeedleBody, cNeedleBody);
+        dc.fillCircle(tx, ty, 2);
+        var tSparkX = tx - cosR.toNumber();
+        var tSparkY = ty - sinR.toNumber();
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
+        dc.fillCircle(tSparkX, tSparkY, 1);
+
         dc.setColor(cHubRim, cHubRim);
         dc.fillCircle(cx, compassCy, 6);
         dc.setColor(cHubCore, cHubCore);
         dc.fillCircle(cx, compassCy, 4);
+        dc.setColor(Constants.COLOR_PRIMARY, Constants.COLOR_PRIMARY);
+        dc.fillCircle(cx, compassCy, 2);
         dc.setColor(cTickMaj, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, compassCy, 1);
 
