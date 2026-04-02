@@ -16,7 +16,7 @@ module Constants {
     const COLOR_SELECTION_OUTLINE = 0x726045; // Bezel frame — ListSelectionChrome
 
     // App metadata
-    const APP_VERSION = "1.3.0";
+    const APP_VERSION = "1.4.0";
     const LAST_UPDATED = "2026-04-01";
     const CONTACT_EMAIL = "ammasudulhaque@gmail.com";
 
