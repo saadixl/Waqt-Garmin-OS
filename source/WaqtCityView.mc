@@ -42,7 +42,7 @@ class WaqtCityView extends WatchUi.View {
         dc.clear();
 
         dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, 24, Graphics.FONT_XTINY, "Location", Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(cx, 24, Graphics.FONT_XTINY, "Set Location", Graphics.TEXT_JUSTIFY_CENTER);
 
         var currentCityIdx = _service.getCityIndex();
         var itemHeight = 92;

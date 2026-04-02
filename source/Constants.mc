@@ -18,7 +18,7 @@ module Constants {
 
     // App metadata
     const APP_VERSION = "1.5.0";
-    const LAST_UPDATED = "2026-04-01";
+    const LAST_UPDATED = "2026-04-03";
     const CONTACT_EMAIL = "ammasudulhaque@gmail.com";
 
     // Prayer names

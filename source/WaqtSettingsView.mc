@@ -4,7 +4,7 @@ using Toybox.WatchUi;
 class WaqtSettingsView extends WatchUi.View {
 
     var _selected = 1;
-    const _items = ["Location", "Find Qibla", "About"];
+    const _items = ["Set Location", "Find Qibla", "About"];
 
     function initialize() {
         View.initialize();

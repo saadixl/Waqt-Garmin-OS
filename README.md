@@ -9,7 +9,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 - Center-focused list: the **selected** prayer sits in a **solid brass** bar (same tone as the Qibla outer ring) with a **light brass accent** on the slanted leading edge.
 - **Outer** rows use subtle, round-aware inset panels; the **next** prayer (when not in the center slot) gets a slightly lifted panel and a **cyan pip** beside the name.
 - **Header**: **city name** for a fixed location, or **coordinates** (e.g. `12.3N 77.6E`) when **Auto detect** is selected and GPS has a fix. **Qibla bearing** in cyan with a soft lift, and a **double hairline** separating the header from the list.
-- **Auto location**: choose **Auto detect** under **Location** to fetch prayer times from [Aladhan](https://aladhan.com/prayer-times-api) using **live latitude/longitude** (and **elevation** when the device reports it). Requires a GPS fix and the usual phone-connected HTTP path.
+- **Auto location**: choose **Auto detect** under **Set Location** to fetch prayer times from [Aladhan](https://aladhan.com/prayer-times-api) using **live latitude/longitude** (and **elevation** when the device reports it). Requires a GPS fix and the usual phone-connected HTTP path.
 - Countdown behaviour unchanged: full countdown for the next prayer (and for the centered row); shorter remaining-time hints on other rows. Colours are tuned so the center row reads crisply on brass, with teal-muted lines elsewhere.
 - **Up / Down** scrolls the list. **Select/Start** opens Settings.
 - **Chrome**: brass **scroll chevrons** (beveled shadow + highlight) and a **settings** cue (brass bezel ring, cyan center jewel) near the physical control cluster on supported models.
@@ -21,7 +21,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 - Press Select/Start on the prayer view to open Settings.
 - Rotating **center-selected** menu with the **same brass bar + slanted accent** treatment as the prayer and city lists.
 - Menu items:
-  - Location
+  - Set Location
   - Find Qibla
   - About
 
@@ -37,7 +37,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 <img width="480" height="auto" alt="4" src="https://github.com/user-attachments/assets/30207621-3b22-4882-80ef-98e8e2c64eb9" />
 
 ### City selection view
-- Open from **Settings → Location**.
+- Open from **Settings → Set Location**.
 - **Auto detect** (GPS) is the **first** row, then **50 cities** sorted **east to west** by longitude. Each row shows **qibla direction** (`--°` for Auto until a fix). **Up / Down** moves selection; **Select** confirms and refreshes prayer times.
 - Selection uses the **same brass highlight** pattern as the prayer screen.
 - Selected location (city index, including Auto detect) is persisted across app launches.
