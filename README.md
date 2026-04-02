@@ -76,6 +76,15 @@ Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Duba
 - **Simulator / dev**: copy `bin/app.prg` to the watch `GARMIN/APPS/` folder over USB, or use the Connect IQ app.
 - **Release**: install or publish the generated `.iq` package.
 
+## Promo image
+The Connect IQ–style landscape banner `media/waqt-promo.png` (**1440×720**) is generated from the latest on-device prayer UI screenshot so store and Readme art stay in sync with the brass / cyan design.
+
+1. Replace `media/source-prayer-screen.png` with a current export or photo (same aspect as your reference frame is fine; the script scales it).
+2. Install [Pillow](https://pypi.org/project/pillow/) if needed: `pip install pillow`
+3. Run: `python3 media/build_promo.py`
+
+This overwrites `media/waqt-promo.png`. Typography uses macOS **Georgia** and **Arial** from `/System/Library/Fonts/Supplemental/`; on Linux adjust the font paths in `media/build_promo.py` if you regenerate there.
+
 ## Note
 - https://api.aladhan.com/v1 API is used to fetch prayer times.
 - The app requires a phone with the Garmin Connect Mobile app for API requests (Garmin watches route HTTP requests through the phone via Bluetooth).
