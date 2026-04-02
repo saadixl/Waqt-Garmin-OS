@@ -1,5 +1,7 @@
 module Constants {
-    const COLOR_PRIMARY = 0x7EC8D4;      // Soft cyan — accents (qibla line, next prayer)
+    const COLOR_PRIMARY = 0x7EC8D4;      // Soft cyan — accents (qibla line, next prayer, needle)
+    const COLOR_PRIMARY_DARK = 0x3A6570; // Deep cyan-teal — needle shadow
+    const COLOR_PRIMARY_LIGHT = 0xADE4EE; // Light cyan — needle edge / highlight
     // Brass family (matches Qibla bezel)
     const COLOR_ACTIVE = 0x5A4C38;       // Dark brass — selection fills, arrows
     const COLOR_TEXT = 0xE8E4DC;         // Warm ivory — primary labels
@@ -14,7 +16,7 @@ module Constants {
     const COLOR_SELECTION_OUTLINE = 0x726045; // Bezel frame — ListSelectionChrome
 
     // App metadata
-    const APP_VERSION = "1.2.1";
+    const APP_VERSION = "1.3.0";
     const LAST_UPDATED = "2026-04-01";
     const CONTACT_EMAIL = "ammasudulhaque@gmail.com";
 

@@ -66,9 +66,9 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         var cCardIvory = 0xDCD8D0;
         var cDegText = 0xA8B8C4;
         var cCityText = 0xD4A84A;
-        var cNeedleSh = 0x0A2414;
-        var cNeedleBody = 0x228B3A;
-        var cNeedleEdge = 0x5CD685;
+        var cNeedleSh = Constants.COLOR_PRIMARY_DARK;
+        var cNeedleBody = Constants.COLOR_PRIMARY;
+        var cNeedleEdge = Constants.COLOR_PRIMARY_LIGHT;
         var cHubRim = 0x7A6848;
         var cHubCore = 0x2A2420;
         var cKaabaWall = 0x141820;
@@ -242,7 +242,40 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.setColor(cCityText, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, cityY, Graphics.FONT_XTINY, cityName, textJust);
 
-        // Green hand toward Qibla on the rotating rose (same angle as a tick at qiblaBearing).
+        // Kaaba first so the Qibla hand draws on top when it aligns toward Mecca.
+        var kw = (ring90Outer * 32) / 100;
+        if (kw < 34) {
+            kw = 34;
+        }
+        if (kw > 58) {
+            kw = 58;
+        }
+        var kh = (kw * 28) / 24;
+        // 25% smaller than previous sizing
+        kw = (kw * 75) / 100;
+        kh = (kh * 75) / 100;
+        if (kw < 1) {
+            kw = 1;
+        }
+        if (kh < 1) {
+            kh = 1;
+        }
+        var kx = cx;
+        var gapAboveKaaba = (screenR * 10) / 100;
+        var ky = compassCy - screenR + gapAboveKaaba + (kh / 2);
+        dc.setColor(cKaabaWall, cKaabaWall);
+        dc.fillRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
+        dc.setColor(cKaabaBand, cKaabaBand);
+        var goldY = ky - (kh / 2) + (kh / 5);
+        var goldH = (kh / 4);
+        if (goldH < 4) {
+            goldH = 4;
+        }
+        dc.fillRectangle(kx - (kw / 2), goldY, kw, goldH);
+        dc.setColor(cCardIvory, Graphics.COLOR_TRANSPARENT);
+        dc.drawRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
+
+        // Cyan Qibla hand (matches app accent) toward Mecca on the rotating rose.
         var deltaQ = normalizeHeadingDeg(qiblaBearing - headingDeg);
         var rad = (deltaQ - 90.0) * Math.PI / 180.0;
         var tipMargin = (ring90Outer * 12) / 100;
@@ -305,39 +338,6 @@ class WaqtQiblaPlaceholderView extends WatchUi.View {
         dc.fillCircle(cx, compassCy, 4);
         dc.setColor(cTickMaj, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, compassCy, 1);
-
-        // Kaaba: gap from top of Kaaba to top of screen (cy - screenR) = 10% of screen radius
-        var kw = (ring90Outer * 32) / 100;
-        if (kw < 34) {
-            kw = 34;
-        }
-        if (kw > 58) {
-            kw = 58;
-        }
-        var kh = (kw * 28) / 24;
-        // 25% smaller than previous sizing
-        kw = (kw * 75) / 100;
-        kh = (kh * 75) / 100;
-        if (kw < 1) {
-            kw = 1;
-        }
-        if (kh < 1) {
-            kh = 1;
-        }
-        var kx = cx;
-        var gapAboveKaaba = (screenR * 10) / 100;
-        var ky = compassCy - screenR + gapAboveKaaba + (kh / 2);
-        dc.setColor(cKaabaWall, cKaabaWall);
-        dc.fillRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
-        dc.setColor(cKaabaBand, cKaabaBand);
-        var goldY = ky - (kh / 2) + (kh / 5);
-        var goldH = (kh / 4);
-        if (goldH < 4) {
-            goldH = 4;
-        }
-        dc.fillRectangle(kx - (kw / 2), goldY, kw, goldH);
-        dc.setColor(cCardIvory, Graphics.COLOR_TRANSPARENT);
-        dc.drawRectangle(kx - (kw / 2), ky - (kh / 2), kw, kh);
 
         // Back cue near physical BACK button (lower-right).
         var backX = width - 35;
