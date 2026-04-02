@@ -1,3 +1,3 @@
 <menu2 id="MainMenu" title="@Strings.AppName">
-    <menu-item id="menuItemCity" label="Select City" />
+    <menu-item id="menuItemCity" label="Location" />
 </menu2>

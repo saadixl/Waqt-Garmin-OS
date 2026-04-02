@@ -66,6 +66,7 @@ def build() -> Image.Image:
     for line in (
         "PRAYER TIMES WITH LIVE COUNT DOWN",
         "TWENTY CITIES",
+        "AUTO LOCATION DETECTION (GPS)",
         "QIBLA COMPASS",
     ):
         d.ellipse((72, y + 8, 82, y + 18), fill=(*CYAN, 255))
