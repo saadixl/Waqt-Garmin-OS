@@ -2,8 +2,6 @@
 
 A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). The UI uses a **brass and cyan** theme aligned with the Qibla compass: warm brass bezels and accents, soft cyan for “next” cues and the live needle, and ivory/white typography on deep black.
 
-![1](https://github.com/user-attachments/assets/f9bfbbb4-7cee-4332-aa63-32fe26d090bc)
-
 
 ## Features
 
@@ -16,8 +14,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 - **Chrome**: brass **scroll chevrons** (beveled shadow + highlight) and a **settings** cue (brass bezel ring, cyan center jewel) near the physical control cluster on supported models.
 - **Loading** shows brass primary copy with a subtle teal ellipsis; **errors** show a clear system-style message.
 
-<img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/b6880fd1-ac5c-48f5-ac3d-76afc71e3ba2" />
-
+<img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/5624fc49-6e45-4799-981e-8036a55af475" />
 
 ### Settings view
 - Press Select/Start on the prayer view to open Settings.
@@ -27,16 +24,14 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
   - Find Qibla
   - About
 
-<img width="480" height="auto" alt="2" src="https://github.com/user-attachments/assets/32aa0cfe-5dab-43ad-9adb-d8bbccc6ec10" />
-
+<img width="480" height="auto" alt="2" src="https://github.com/user-attachments/assets/7a7634e2-8cb8-4a39-8802-d764425547e5" />
 
 ### Find Qibla view
 - Live **compass** for the current city; **heading** comes from the device sensor when available.
 - **Kaaba** marker on the outer ring; city name and bearing inside the face.
 - **Qibla hand**: cyan **lancet-style** needle (tip toward Mecca, counterweight toward the hub), with depth **shadow**, **rim/body** layers, a small **glint**, **tip highlight**, and a **hub** stack (brass rim, dark core, cyan collar, bright pin).
 
-<img width="480" height="auto" alt="4" src="https://github.com/user-attachments/assets/b04900e5-c06f-4d07-9732-bc818b15a3bf" />
-
+<img width="480" height="auto" alt="4" src="https://github.com/user-attachments/assets/30207621-3b22-4882-80ef-98e8e2c64eb9" />
 
 ### City selection view
 - Open from **Settings → Select location**.
@@ -44,7 +39,7 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 - Selection uses the **same brass highlight** pattern as the prayer screen.
 - Selected city is persisted across app launches.
 
-<img width="480" height="auto" alt="3" src="https://github.com/user-attachments/assets/62228785-0153-4338-9f99-3ddeddf64164" />
+<img width="480" height="auto" alt="3" src="https://github.com/user-attachments/assets/aa015add-c03b-441e-a5dc-fd4f07dd9cee" />
 
 ## Supported Cities
 Singapore, Sydney, Tokyo, Kuala Lumpur, Jakarta, Dhaka, New Delhi, Karachi, Dubai, Tehran, Doha, Moscow, Makkah, Istanbul, Paris, London, Toronto, New York, Austin, San Francisco
