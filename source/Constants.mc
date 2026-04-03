@@ -11,7 +11,7 @@ module Constants {
     const COLOR_ACTIVE_MID = 0x726045;   // Qibla outer brass ring; list selection fill
 
     // App metadata
-    const APP_VERSION = "1.5.0";
+    const APP_VERSION = "1.5.2";
     const LAST_UPDATED = "2026-04-03";
 
     // Prayer names
