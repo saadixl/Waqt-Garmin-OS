@@ -1,3 +1,0 @@
-<menu2 id="MainMenu" title="@Strings.AppName">
-    <menu-item id="menuItemCity" label="Set Location" />
-</menu2>

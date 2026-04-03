@@ -191,7 +191,6 @@ class WaqtPrayerView extends WatchUi.View {
                 }
                 var bgLeft = cx - halfW + 5;
                 var bgRight = cx + halfW - 5;
-                var bgWidth = bgRight - bgLeft;
                 var slant = 20;
 
                 ListSelectionChrome.fillSlantedSelectionBar(

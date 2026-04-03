@@ -368,21 +368,9 @@ module CityData {
             return 0;
         }
         var ai = cityIndex - 1;
-        var lat1 = CITY_LATS[ai].toFloat() / 10000.0;
-        var lon1 = CITY_LONS[ai].toFloat() / 10000.0;
-        var lat2 = MECCA_LAT.toFloat() / 10000.0;
-        var lon2 = MECCA_LON.toFloat() / 10000.0;
-
-        var dLon = (lon2 - lon1) * Math.PI / 180.0;
-        lat1 = lat1 * Math.PI / 180.0;
-        lat2 = lat2 * Math.PI / 180.0;
-
-        var y = Math.sin(dLon) * Math.cos(lat2);
-        var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-
-        var bearing = Math.atan2(y, x) * 180.0 / Math.PI;
-        bearing = ((bearing + 360.0).toNumber()) % 360;
-
-        return bearing.toNumber();
+        return bearingFromLatLonDegrees(
+            CITY_LATS[ai].toFloat() / 10000.0,
+            CITY_LONS[ai].toFloat() / 10000.0
+        );
     }
 }

@@ -38,26 +38,4 @@ module ListSelectionChrome {
             [bgLeft, yBot]
         ]);
     }
-
-    function drawCenterPanel(dc, width, itemY, rowH) {
-        var margin = 14;
-        var insetY = 2;
-        var x = margin;
-        var y = itemY + insetY;
-        var w = width - 2 * margin;
-        var h = rowH - 2 * insetY;
-        if (h < 1 || w < 1) {
-            return;
-        }
-        var fill = Constants.COLOR_ACTIVE_MID;
-        dc.setColor(fill, fill);
-        dc.fillRectangle(x, y, w, h);
-
-        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
-        dc.drawRectangle(x, y, w, h);
-        dc.setColor(Constants.COLOR_ACTIVE_BORDER, Graphics.COLOR_TRANSPARENT);
-        dc.drawLine(x + 2, y + 1, x + w - 3, y + 1);
-        dc.setColor(Constants.COLOR_ACTIVE, Graphics.COLOR_TRANSPARENT);
-        dc.drawLine(x + 2, y + h - 2, x + w - 3, y + h - 2);
-    }
 }

@@ -15,7 +15,7 @@ W, H = 1440, 720
 VOID = (3, 5, 6)
 BRASS_MID = (114, 96, 69)
 BRASS_LIGHT = (201, 184, 150)
-# Match app Qibla accent (Constants.COLOR_PRIMARY / COLOR_PRIMARY_LIGHT)
+# Match app accent (Constants.COLOR_PRIMARY)
 ACCENT = (92, 184, 138)
 ACCENT_BRIGHT = (157, 212, 176)
 IVORY = (232, 228, 220)
