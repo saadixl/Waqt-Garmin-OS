@@ -6,14 +6,10 @@ A prayer times watch app for Garmin devices, built with Connect IQ (Monkey C). T
 ## Features
 
 ### Prayer times view
-- Center-focused list: the **selected** prayer sits in a **solid brass** bar (same tone as the Qibla outer ring) with a **light brass accent** on the slanted leading edge.
-- **Outer** rows use subtle, round-aware inset panels; the **next** prayer (when not in the center slot) gets a slightly lifted panel and a **green** accent beside the name.
-- **Header**: **city name** for a fixed location, or **coordinates** (e.g. `12.3N 77.6E`) when **Auto detect** is selected and there is a **current GPS fix**. **Qibla bearing** in green with a soft lift, and a **double hairline** separating the header from the list.
-- **Auto location**: choose **Auto detect** under **Set Location** to fetch prayer times from [Aladhan](https://aladhan.com/prayer-times-api) using **live** latitude/longitude (and **elevation** when the device reports it). No stale GPS is kept—use **Settings → Refresh GPS** to sample again. Prayer requests use dot-decimal coordinates in the API URL (avoids HTTP 400 from locale formatting). Requires the usual phone-connected HTTP path via Garmin Connect Mobile.
-- Countdown behaviour: full countdown for the next prayer (and for the centered row); shorter remaining-time hints on other rows. Colours are tuned so the center row reads crisply on brass, with muted lines elsewhere.
-- **Up / Down** scrolls the list. **Select/Start** opens Settings.
-- **Chrome**: brass **scroll chevrons** (beveled shadow + highlight) and a **settings** cue (brass bezel ring, green center jewel) near the physical control cluster on supported models.
-- **Loading** shows brass primary copy with a subtle ellipsis; **errors** are explicit. In **Auto** mode, GPS-related failures suggest **Settings → Refresh GPS** on a second line; fixed-city failures may show **No connection** / **HTTP** codes.
+- Main screen: a **scrollable list** of the six daily times. The **center** row is the focus (brass highlight); the **next upcoming** prayer is marked in **green**. Countdowns show time until each prayer.
+- **Top**: your **location** (city name, or coordinates in **Auto detect** when GPS has a fix) and **Qibla** direction in degrees.
+- **Controls**: **Up / Down** move the list; **Start** opens **Settings**.
+- Times come from the [Aladhan](https://aladhan.com/prayer-times-api) API over the phone (**Garmin Connect Mobile**). **Auto detect** uses **live GPS** only—if loading fails, try **Settings → Refresh GPS**.
 
 <img width="480" height="auto" alt="1" src="https://github.com/user-attachments/assets/5624fc49-6e45-4799-981e-8036a55af475" />
 
